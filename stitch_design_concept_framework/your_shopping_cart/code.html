@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shopping Cart - Safa Kesar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&amp;family=Work+Sans:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#251916",
+                        "on-primary-fixed": "#3f0400",
+                        "on-surface": "#251916",
+                        "tertiary-container": "#006190",
+                        "surface-container-high": "#fbe3de",
+                        "primary-container": "#a6321e",
+                        "surface-container-highest": "#f5ddd9",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#ffdad3",
+                        "secondary": "#835500",
+                        "tertiary-fixed-dim": "#8ecdff",
+                        "on-secondary-fixed": "#291800",
+                        "trust-olive": "#5C6B4A",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#004b71",
+                        "secondary-container": "#fdba5a",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#00486d",
+                        "on-primary-container": "#ffc6bb",
+                        "primary": "#851a08",
+                        "inverse-surface": "#3b2d2a",
+                        "secondary-fixed-dim": "#fdba5a",
+                        "inverse-on-surface": "#ffede9",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "outline": "#8c716c",
+                        "inverse-primary": "#ffb4a5",
+                        "on-primary": "#ffffff",
+                        "crocus-purple": "#6B4C7A",
+                        "on-tertiary-container": "#add9ff",
+                        "on-tertiary-fixed": "#001e30",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#ffe9e5",
+                        "surface-dim": "#ecd5d1",
+                        "surface": "#fff8f6",
+                        "on-secondary-container": "#734a00",
+                        "surface-tint": "#aa3521",
+                        "warm-ivory": "#F8F3EC",
+                        "secondary-fixed": "#ffddb4",
+                        "surface-container-low": "#fff0ee",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#891d0b",
+                        "background": "#fff8f6",
+                        "surface-bright": "#fff8f6",
+                        "surface-variant": "#f5ddd9",
+                        "walnut-ink": "#2A241C",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#58413d",
+                        "tertiary-fixed": "#cbe6ff",
+                        "outline-variant": "#e0bfb9",
+                        "primary-fixed-dim": "#ffb4a5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "64px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Work Sans"],
+                        "price-display": ["Work Sans"],
+                        "body-lg": ["Work Sans"],
+                        "headline-xl": ["Fraunces"],
+                        "headline-lg": ["Fraunces"],
+                        "body-md": ["Work Sans"],
+                        "headline-lg-mobile": ["Fraunces"],
+                        "headline-md": ["Fraunces"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "price-display": ["20px", { "lineHeight": "24px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen relative overflow-hidden">
+<!-- Top Navigation Context -->
+<nav class="bg-background dark:bg-background border-b border-outline-variant w-full fixed top-0 z-10 transition-colors">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed" href="#">Safa Kesar</a>
+</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-lg text-body-lg" href="#">Our Saffron</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-lg text-body-lg" href="#">Shop</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-lg text-body-lg" href="#">Education</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors font-body-lg text-body-lg" href="#">Visit Us</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</button>
+<button class="text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-on-secondary text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas (Blurred/Dimmed for Drawer Focus) -->
+<main class="pt-[72px] h-screen w-full flex items-center justify-center filter blur-[2px] opacity-70 transition-all duration-300">
+<div class="max-w-container-max w-full px-margin-mobile md:px-margin-desktop py-16 grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<div class="aspect-square bg-surface-container rounded-xl overflow-hidden relative border border-outline-variant">
+<img class="object-cover w-full h-full" data-alt="A high-resolution macro shot of vibrant red Kashmiri Mongra saffron threads resting on a textured matte walnut wood surface. The lighting is soft, natural, and calm, casting subtle tonal shadows that highlight the pure quality and physical reality of the product. The mood is authentic and unhurried, reflecting a premium corporate modern aesthetic with earthy, warm tones and radical transparency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmCNcidz2HE0H3eruoVO91LIDmHSCRo3ZOEW2apV2T8-qqvXLer5LDEFC0k7FnrTSHDgp7jib0hms4PNuThiC3yGCKZQQdoVML9sVO5OqlkInKa7PenSNiGYj5V1Z-RxsUWfHK_BF_pKi1VKlHrWu6SzAyl0OD0CsJnuD_XDdP74uPYq-w0RVqwNQkt6XXoYGexRYllUlxxieudTeGdeliWZ_P8pAKM1zbGrIQELo1HynYlRyq0Zm_"/>
+</div>
+<div class="flex flex-col justify-center gap-6 pl-0 md:pl-12">
+<h1 class="font-headline-xl text-headline-xl text-on-background">1g Premium Mongra Saffron</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Pure, untempered saffron sourced directly from Pampore. Each thread is hand-picked ensuring maximum potency and color.</p>
+</div>
+</div>
+</main>
+<!-- Overlay Dimmer -->
+<div aria-hidden="true" class="fixed inset-0 bg-walnut-ink/30 backdrop-blur-sm z-40 transition-opacity duration-300"></div>
+<!-- Slide-out Cart Drawer -->
+<aside aria-labelledby="cart-title" aria-modal="true" class="fixed inset-y-0 right-0 z-50 w-full md:w-[480px] bg-surface shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out border-l border-outline-variant overflow-hidden" role="dialog">
+<!-- Drawer Header -->
+<div class="flex items-center justify-between px-6 py-5 border-b border-outline-variant bg-surface-bright">
+<h2 class="font-headline-md text-headline-md text-on-background flex items-center gap-2" id="cart-title">
+                Cart
+                <span class="bg-surface-container-high text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-full">2 Items</span>
+</h2>
+<button aria-label="Close cart" class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">close</span>
+</button>
+</div>
+<!-- Free Shipping Progress -->
+<div class="px-6 py-4 bg-surface-container-lowest border-b border-outline-variant/50">
+<div class="flex justify-between items-end mb-2">
+<span class="font-body-md text-body-md text-on-surface-variant text-sm">Add <strong class="text-primary">₹450</strong> more for Free Shipping</span>
+<span class="material-symbols-outlined text-trust-olive text-sm" style="font-variation-settings: 'FILL' 0;">local_shipping</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden border border-outline-variant/30">
+<div class="bg-trust-olive h-full rounded-full transition-all duration-500 ease-out" style="width: 75%;"></div>
+</div>
+</div>
+<!-- Cart Items List -->
+<div class="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-6 bg-surface-bright">
+<!-- Cart Item 1 -->
+<div class="flex gap-4 group">
+<div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg border border-outline-variant overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A meticulously lit close-up of a tiny glass jar filled with vivid red saffron threads. The jar sits on a minimalist, light warm-ivory surface. The image emphasizes tactile realism, clarity, and botanical documentation over decorative luxury. Shadows are subtle and inset, aligning with a calm, transparent, and physical brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmITC78ioeRfzBJayrtGyY0A3EL4jqNJUYw782cdVEvYIIR5N5JJgQmaJReI_uKBhKHARN0-dxWg4tUbp1QTyw-r_NblYoYLh2_-rJpmMB194hj71nrmifyZUnSFy1ZqeW6idOItHaghgeSWgim6TDb_L37Puik5S7MpqdHItE7sB_-m8SvY9rtEF4_p3agZ3wy_lWY80be2BmFpaRKPzKr7-RoNtps08nl3ezok5Il_uclkCaROxh"/>
+</div>
+<div class="flex flex-col flex-1 py-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-background">1g Mongra Saffron</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Batch #882 · Harvest Oct 2023</p>
+</div>
+<button aria-label="Remove item" class="text-on-surface-variant hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">delete</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2">
+<!-- Quantity Control (Custom Design) -->
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest h-8">
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-variant rounded-l">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">remove</span>
+</button>
+<span class="w-8 text-center font-body-md text-body-md font-medium text-on-background text-sm">1</span>
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-variant rounded-r">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+<span class="font-price-display text-price-display text-on-background">₹750</span>
+</div>
+</div>
+</div>
+<!-- Cart Item 2 -->
+<div class="flex gap-4 group">
+<div class="w-24 h-24 flex-shrink-0 bg-surface-container rounded-lg border border-outline-variant overflow-hidden relative">
+<img class="w-full h-full object-cover" data-alt="A clear, macro photograph of premium Mamra almonds piled neatly. The rough, matte texture of the almond shells is highlighted against a muted walnut-ink toned background. The composition is grounded and unhurried, emphasizing the pure, unprocessed nature of the physical product, fitting a modern, transparent brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1TXCBQWXXkqCLNIC0qiJgVbxUgp_qUKTNJf-VHU9sdUXt0h5FAAgy6cu1C_SljI4aJmXb8KCc_iV6rMoCxsKBEMG-dHFoRRcifyoxbV_bmJCIWZwkItsrnCQJe6Rjq2gmcVyb2LlevJbhvktrI6Hr3bip3N3RDJprfUxHO3JVEfMfsPgrR6rB5r_iE9i8TScCVBLiRN1sVS_2vl-c5eiRKwa8x060B-nJoqKnMUe-JZbusQDlEFs1"/>
+</div>
+<div class="flex flex-col flex-1 py-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-body-md text-body-md font-semibold text-on-background">250g Mamra Almonds</h3>
+<p class="font-label-caps text-label-caps text-on-surface-variant mt-1">Origin: Pampore Region</p>
+</div>
+<button aria-label="Remove item" class="text-on-surface-variant hover:text-error transition-colors p-1">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 0;">delete</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-auto pt-2">
+<!-- Quantity Control -->
+<div class="flex items-center border border-outline-variant rounded bg-surface-container-lowest h-8">
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-variant rounded-l">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">remove</span>
+</button>
+<span class="w-8 text-center font-body-md text-body-md font-medium text-on-background text-sm">1</span>
+<button class="w-8 h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-variant rounded-r">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">add</span>
+</button>
+</div>
+<span class="font-price-display text-price-display text-on-background">₹800</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Drawer Footer (Sticky Bottom) -->
+<div class="border-t border-outline-variant bg-surface p-6 shadow-[0_-4px_24px_rgba(42,36,28,0.05)]">
+<!-- Summary -->
+<div class="space-y-3 mb-6">
+<div class="flex justify-between text-on-surface-variant font-body-md text-body-md">
+<span>Subtotal</span>
+<span class="font-medium text-on-background">₹1550</span>
+</div>
+<div class="flex justify-between text-on-surface-variant font-body-md text-body-md">
+<span>Shipping</span>
+<span>Calculated at next step</span>
+</div>
+<div class="h-px w-full bg-outline-variant/50 my-2"></div>
+<div class="flex justify-between items-end">
+<span class="font-headline-md text-headline-md text-on-background">Total</span>
+<span class="font-price-display text-price-display text-on-background text-2xl">₹1550</span>
+</div>
+<p class="font-label-caps text-label-caps text-on-surface-variant text-right normal-case text-xs">Tax included. Shipping calculated at checkout.</p>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-caps text-label-caps py-4 rounded transition-colors flex items-center justify-center gap-2 group">
+                Checkout
+                <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform" style="font-variation-settings: 'FILL' 0;">arrow_forward</span>
+</button>
+<!-- Trust Badges -->
+<div class="mt-6 flex justify-center items-center gap-6">
+<div class="flex items-center gap-1.5 text-trust-olive">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-caps text-label-caps text-[10px]">Secure Checkout</span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-1.5 text-trust-olive">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-caps text-label-caps text-[10px]">ISO 3632 Certified</span>
+</div>
+</div>
+</div>
+</aside>
+</body></html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shop - Safa Kesar Pampore</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@100..900&family=Work+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Design System Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#835500",
+                    "background": "#fff8f6",
+                    "outline-variant": "#e0bfb9",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#cbe6ff",
+                    "tertiary-container": "#006190",
+                    "walnut-ink": "#2A241C",
+                    "on-secondary-container": "#734a00",
+                    "trust-olive": "#5C6B4A",
+                    "on-primary-fixed": "#3f0400",
+                    "surface-tint": "#aa3521",
+                    "on-background": "#251916",
+                    "on-tertiary-container": "#add9ff",
+                    "outline": "#8c716c",
+                    "on-surface": "#251916",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "on-primary-container": "#ffc6bb",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#ffddb4",
+                    "primary-fixed": "#ffdad3",
+                    "primary-fixed-dim": "#ffb4a5",
+                    "surface-container": "#ffe9e5",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#fff0ee",
+                    "inverse-primary": "#ffb4a5",
+                    "secondary-container": "#fdba5a",
+                    "surface-variant": "#f5ddd9",
+                    "on-tertiary-fixed": "#001e30",
+                    "surface": "#fff8f6",
+                    "on-tertiary-fixed-variant": "#004b71",
+                    "inverse-on-surface": "#ffede9",
+                    "crocus-purple": "#6B4C7A",
+                    "secondary-fixed-dim": "#fdba5a",
+                    "surface-bright": "#fff8f6",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#3b2d2a",
+                    "on-secondary-fixed": "#291800",
+                    "surface-dim": "#ecd5d1",
+                    "primary": "#851a08",
+                    "error-container": "#ffdad6",
+                    "surface-container-high": "#fbe3de",
+                    "tertiary-fixed-dim": "#8ecdff",
+                    "tertiary": "#00486d",
+                    "on-surface-variant": "#58413d",
+                    "primary-container": "#a6321e",
+                    "surface-container-highest": "#f5ddd9",
+                    "on-primary-fixed-variant": "#891d0b",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "warm-ivory": "#F8F3EC"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "unit": "8px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "margin-desktop": "64px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-caps": ["Work Sans"],
+                    "body-md": ["Work Sans"],
+                    "headline-lg-mobile": ["Fraunces"],
+                    "price-display": ["Work Sans"],
+                    "headline-xl": ["Fraunces"],
+                    "headline-lg": ["Fraunces"],
+                    "body-lg": ["Work Sans"],
+                    "headline-md": ["Fraunces"]
+            },
+            "fontSize": {
+                    "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "500"}],
+                    "price-display": ["20px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .pressed-effect {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        /* Custom scrollbar for horizontal mobile nav */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background antialiased selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-background dark:bg-background border-b border-outline-variant sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<!-- Brand -->
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed tracking-tight">
+                Safa Kesar
+            </div>
+<!-- Navigation Links (Desktop) -->
+<nav class="hidden md:flex gap-8 items-center">
+<!-- Inactive Link -->
+<a class="font-body-lg text-body-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+                    Our Saffron
+                </a>
+<!-- Active Link (Shop) -->
+<a class="font-body-lg text-body-lg text-primary dark:text-primary-fixed border-b-2 border-primary dark:border-primary-fixed pb-1 opacity-80 duration-200" href="#">
+                    Shop
+                </a>
+<!-- Inactive Link -->
+<a class="font-body-lg text-body-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+                    Education
+                </a>
+<!-- Inactive Link -->
+<a class="font-body-lg text-body-lg text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">
+                    Visit Us
+                </a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-4">
+<button aria-label="shopping_bag" class="text-primary dark:text-primary-fixed hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_bag</span>
+</button>
+<button aria-label="person" class="text-primary dark:text-primary-fixed hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">person</span>
+</button>
+<button class="hidden md:block bg-primary text-on-primary font-label-caps text-label-caps px-6 py-2 rounded uppercase tracking-wider hover:bg-primary-container transition-colors">
+                    Cart
+                </button>
+</div>
+</div>
+</header>
+<!-- Harvest Banner -->
+<div class="bg-secondary-container text-on-secondary-container py-2 text-center border-b border-secondary/20">
+<p class="font-label-caps text-label-caps uppercase flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">eco</span>
+            Fresh Arrival: Mongra Saffron - Harvested Nov 2023
+        </p>
+</div>
+<!-- Main Layout Grid -->
+<main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-24">
+<!-- Page Header -->
+<div class="mb-12 md:mb-20">
+<h1 class="font-headline-xl text-headline-xl text-walnut-ink mb-4">The Catalog</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Authentic, traceable goods direct from our physical storefront in Pampore. Every batch is documented and verified.
+            </p>
+</div>
+<div class="flex flex-col md:flex-row gap-gutter relative">
+<!-- Category Sidebar (Sticky on Desktop) -->
+<aside class="md:w-1/4 shrink-0">
+<div class="sticky top-32">
+<nav class="flex flex-row md:flex-col gap-2 overflow-x-auto hide-scrollbar pb-4 md:pb-0 border-b md:border-b-0 border-outline-variant mb-8 md:mb-0">
+<a class="whitespace-nowrap px-4 py-2 md:px-0 md:py-3 font-label-caps text-label-caps text-primary border-b-2 md:border-b-0 md:border-l-2 border-primary md:pl-4 bg-surface-container-low md:bg-transparent" href="#saffron">
+                            Mongra Saffron
+                        </a>
+<a class="whitespace-nowrap px-4 py-2 md:px-0 md:py-3 font-label-caps text-label-caps text-on-surface-variant hover:text-primary md:border-l-2 border-transparent hover:border-outline-variant md:pl-4 transition-colors" href="#dry-fruits">
+                            Kashmiri Dry Fruits
+                        </a>
+<a class="whitespace-nowrap px-4 py-2 md:px-0 md:py-3 font-label-caps text-label-caps text-on-surface-variant hover:text-primary md:border-l-2 border-transparent hover:border-outline-variant md:pl-4 transition-colors" href="#wellness">
+                            Botanical Wellness
+                        </a>
+</nav>
+</div>
+</aside>
+<!-- Product Canvas -->
+<div class="md:w-3/4 flex flex-col gap-24">
+<!-- Section: Saffron -->
+<section class="scroll-mt-32" id="saffron">
+<div class="mb-8 border-b border-outline-variant pb-4 flex justify-between items-end">
+<h2 class="font-headline-lg text-headline-lg text-walnut-ink">Mongra Saffron</h2>
+<span class="font-label-caps text-label-caps text-trust-olive flex items-center gap-1 bg-warm-ivory px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+                            Batch Verified
+                        </span>
+</div>
+<!-- Bento Grid for Saffron -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-unit">
+<!-- Primary Product Card (Large) -->
+<div class="md:col-span-2 bg-surface-container-lowest border border-outline-variant flex flex-col md:flex-row overflow-hidden group">
+<div class="md:w-1/2 h-64 md:h-auto relative bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Macro photography of deep crimson Mongra saffron threads resting on a coarse, textured off-white linen cloth. The lighting is soft and natural, emphasizing the vibrant red hue and delicate stigma structures. The mood is calm, organic, and highly detailed, conveying absolute purity and premium agricultural origin." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBj8M0kcoYw0CXpzAl6a4k_yMKnPBEVBxOpV05ZT9Y-uvu3z7NIef1ZUODTL2ZwbvtbGu_28Zg-NHGhACbXV5nhndJQN7WbqmXLdQ3R9dqlVXyqmh3z7CHwb3chKZehv2-z8RVo-7prhuCgk5PtILmCAFrMoLGlD_1YeIPUE20HCyNyL2mvAjqqkRZwpL07-HKX2xYE50klyCpttrfXaDaPFawJ5EcKLMxlz4bqawZRxmFXVBkIkM4l"/>
+<div class="absolute top-4 left-4 bg-trust-olive text-on-primary font-label-caps text-label-caps px-3 py-1 rounded-sm shadow-sm backdrop-blur-sm bg-opacity-90 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    Harvest: Nov 2023
+                                </div>
+</div>
+<div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-between bg-warm-ivory">
+<div>
+<h3 class="font-headline-md text-headline-md text-walnut-ink mb-2">Signature Mongra Saffron</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Our highest grade stigmas, carefully hand-separated. Deep crimson color, intense aroma, and powerful flavoring properties. Grown in Pampore, documented at every step.</p>
+<!-- Weight Selector -->
+<div class="mb-6">
+<label class="block font-label-caps text-label-caps text-walnut-ink mb-3 uppercase tracking-wider">Select Quantity</label>
+<div class="flex flex-wrap gap-2">
+<button class="border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:border-primary hover:text-primary transition-colors pressed-effect">0.5g</button>
+<button class="border-2 border-primary bg-primary-fixed/20 px-3 py-2 font-label-caps text-label-caps text-primary transition-colors pressed-effect">1g</button>
+<button class="border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:border-primary hover:text-primary transition-colors pressed-effect">5g</button>
+<button class="border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:border-primary hover:text-primary transition-colors pressed-effect">10g</button>
+<button class="border border-outline-variant px-3 py-2 font-label-caps text-label-caps text-on-surface-variant hover:border-primary hover:text-primary transition-colors pressed-effect">25g</button>
+</div>
+</div>
+</div>
+<div>
+<div class="flex items-end justify-between mb-4">
+<div>
+<span class="font-price-display text-price-display text-walnut-ink block">₹550.00</span>
+<span class="font-body-md text-[12px] text-on-surface-variant">Tax included. Shipping calculated at checkout.</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-caps text-label-caps py-4 rounded-sm uppercase tracking-widest hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+                                        Add to Cart <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+</button>
+<p class="mt-3 font-body-md text-[12px] text-trust-olive text-center flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px]">description</span> Batch #882 Verification Included
+                                    </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Dry Fruits -->
+<section class="scroll-mt-32" id="dry-fruits">
+<div class="mb-8 border-b border-outline-variant pb-4">
+<h2 class="font-headline-lg text-headline-lg text-walnut-ink">Kashmiri Dry Fruits</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-unit">
+<!-- Product Card -->
+<div class="bg-surface border border-outline-variant flex flex-col group">
+<div class="h-48 bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A close-up, tactile shot of raw Kashmiri walnuts in their shells, resting on a smooth wooden surface. The lighting is warm and natural, highlighting the intricate textures of the shells. The color palette features earthy browns and warm ivory tones, reflecting a pure, unprocessed agricultural product." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvp8t8rdZ-hrg07aOhxQSW0g1K5S-kf-3iuK1broDR4MxkPnMcrvEtfz5L2clOd3cq2Z9gbH514UZiWJ-HBb46bwJS9OVhsJO3pUtsx-cPlAFr6folOGJE-O21mSBikt3PoZZrT82xSTNlQ2Lk2oaiZ6Alhme_8K_5DMAVJAP6bGecZ4BM1in2lgMySuf1PxYV6JJVqlAKKdIlV5ih0npwAWFKCZ3rWhGPxv5gNfCYfcBeT3q8y8IZ"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-headline-md text-[20px] text-walnut-ink mb-1">Kashmiri Walnuts (Giri)</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-4 line-clamp-2">Premium quality kernels, known for their high oil content and distinct flavor.</p>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-3">
+<span class="font-price-display text-[18px] text-walnut-ink">₹850.00 <span class="text-[12px] text-on-surface-variant font-normal">/ 500g</span></span>
+</div>
+<button class="w-full border border-walnut-ink text-walnut-ink font-label-caps text-label-caps py-2 rounded-sm uppercase tracking-wider hover:bg-walnut-ink hover:text-warm-ivory transition-colors">
+                                        Add to Cart
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-surface border border-outline-variant flex flex-col group">
+<div class="h-48 bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Macro photography of raw Mamra almonds scattered on a minimalist, off-white ceramic plate. The lighting highlights the unique, irregular shapes and matte texture of the almonds against the smooth background. The mood is clean, dietary-focused, and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuKwxnv5EBaiIa479bk3a3dt3lD3EOzluLKQNSxmAcZwR6q2IIB60GbcX9CHUiJc37sCjAXEpKEnvXCOrSYS8saLfQlP348neZV2R1x_SbiaMppHEsVgV9fa3R5RYmZahrIH6VMwiYWXi91M885hlnEXUKmUV_N-4HO_H0911d8nIz3UfqX1EFkzrquQ8Gg4z7Kat3HWQEVeqVhlPk23tz3Xlo9NfBmId4lfR7aYyt5Ur1NSHsQsB8"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-headline-md text-[20px] text-walnut-ink mb-1">Mamra Almonds</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-4 line-clamp-2">Rare, nutrient-dense almonds sourced from select orchards.</p>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-3">
+<span class="font-price-display text-[18px] text-walnut-ink">₹1,200.00 <span class="text-[12px] text-on-surface-variant font-normal">/ 250g</span></span>
+</div>
+<button class="w-full border border-walnut-ink text-walnut-ink font-label-caps text-label-caps py-2 rounded-sm uppercase tracking-wider hover:bg-walnut-ink hover:text-warm-ivory transition-colors">
+                                        Add to Cart
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Product Card -->
+<div class="bg-surface border border-outline-variant flex flex-col group">
+<div class="h-48 bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A curated arrangement of large, raw pecans on a rustic linen backdrop. The image focuses on the rich, dark brown tones and ridged textures of the nuts. The lighting is slightly dramatic, casting soft shadows that emphasize the physical, tactile quality of the product." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASt9s-OYGw8jwFMTqnVr5DASoMW_wsqrGTMhJzYbOtCrajgnmUbuFMjeeyAj8ykOx482X8BT9nWWi6kiGYTKXhkjuVadB4qNLHA_8iUEaRxN0jrAj2bIU9rc31X7fjIOqUKcNc7fJcP4v3Q0U13g3Dc6ZnO1-KO1tmYhcg9Gb4am7dFEcWY7P6USFajCVGP1LFrzGJFcr-F_H10373dpj52oyqO8-UYHascBiz26ehqSD9Jj_BgoLr"/>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<h3 class="font-headline-md text-[20px] text-walnut-ink mb-1">Premium Pecans</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-4 line-clamp-2">Rich, buttery pecans perfect for culinary or direct consumption.</p>
+<div class="mt-auto">
+<div class="flex items-center justify-between mb-3">
+<span class="font-price-display text-[18px] text-walnut-ink">₹950.00 <span class="text-[12px] text-on-surface-variant font-normal">/ 250g</span></span>
+</div>
+<button class="w-full border border-walnut-ink text-walnut-ink font-label-caps text-label-caps py-2 rounded-sm uppercase tracking-wider hover:bg-walnut-ink hover:text-warm-ivory transition-colors">
+                                        Add to Cart
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Wellness -->
+<section class="scroll-mt-32" id="wellness">
+<div class="mb-8 border-b border-outline-variant pb-4">
+<h2 class="font-headline-lg text-headline-lg text-walnut-ink">Botanical Wellness</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-unit">
+<!-- Product List Item (Horizontal style for variety) -->
+<div class="bg-surface-container-lowest border border-outline-variant flex overflow-hidden group">
+<div class="w-1/3 min-h-full bg-surface-container overflow-hidden shrink-0">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A minimalist glass bottle of pure rose water sitting on a light, textured stone surface. Soft, diffused daylight filters through the clear liquid, highlighting its absolute purity. A single, fresh pink rose petal rests nearby. The color palette is subtle, focusing on transparency, soft greys, and a hint of natural pink." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6mVG1t5WFvhexiImpjCKZNvIKytuxaAO0ux24vmG9MoKL7s2hsFjsLRcabDfgZc5a2QYc8JfyP34HnXDitTyePiQR-AzO-0UUzAx94355Y2iBz20eSHU8ijC5P-UXN0HU9ZkiZYYsZBdmd7A0eCFhVg1ijOEXAcJN_A5tC0eIFDzI3VL3DjVHBEc-oLqU9dHJmuMsYsEuVknpCGnOp4VDrUkeXrFHVxSZbPkP_NzSvE1NYAhA_u5b"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<h3 class="font-headline-md text-[20px] text-walnut-ink mb-1">Pure Rose Water (Arqe Gulab)</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-3 line-clamp-2">Distilled from native Kashmiri roses. Zero additives.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-[18px] text-walnut-ink">₹350.00</span>
+<button class="text-primary font-label-caps text-label-caps hover:text-primary-container transition-colors uppercase tracking-wider flex items-center gap-1">
+                                        Add <span class="material-symbols-outlined text-[16px]">add_circle</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Product List Item -->
+<div class="bg-surface-container-lowest border border-outline-variant flex overflow-hidden group">
+<div class="w-1/3 min-h-full bg-surface-container overflow-hidden shrink-0">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A small, dark amber glass jar containing Shilajit resin, positioned against a raw slate background. The lighting is moody and focused, highlighting the dense, tar-like texture of the resin. The aesthetic is apothecary-modern, emphasizing natural potency and elemental origin." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBl-JIVX4EeZo1JJWRex0m0ED80Rko9DT-7mhgcOnnLITQ1M0X7ofqRs5Ry24BxvKba8umMUEgE2D546wv6qZrmI4v2FvrGcZ25MuMFYXziA7MMEl5hVZfOhXM354P5J5XNslG_clJi09pScH03DZIuV5BMV4RsZGdufvPWNpecdCFuKeFQpmqiawsdjXi-rEa_g1RlXN1YQB-KCXYrzjl6Hpxo4UIRFaZIZOn5DmL94M7COyObitc"/>
+</div>
+<div class="w-2/3 p-4 flex flex-col justify-center">
+<h3 class="font-headline-md text-[20px] text-walnut-ink mb-1">Himalayan Shilajit Resin</h3>
+<p class="font-body-md text-[14px] text-on-surface-variant mb-3 line-clamp-2">Purified resin sourced from high-altitude rock exudates.</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-price-display text-[18px] text-walnut-ink">₹1,800.00</span>
+<button class="text-primary font-label-caps text-label-caps hover:text-primary-container transition-colors uppercase tracking-wider flex items-center gap-1">
+                                        Add <span class="material-symbols-outlined text-[16px]">add_circle</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (WhatsApp Direct) -->
+<a aria-label="WhatsApp Aadil" class="fixed bottom-6 right-6 bg-trust-olive text-on-primary p-4 rounded-full shadow-lg hover:scale-105 transition-transform flex items-center justify-center z-50 group" href="#">
+<span class="material-symbols-outlined text-[24px]">forum</span>
+<span class="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out font-label-caps text-label-caps ml-0 group-hover:ml-2">
+            Ask Aadil
+        </span>
+</a>
+<!-- Footer (Shared Component) -->
+<footer class="bg-surface-container dark:bg-inverse-surface border-t border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-desktop py-16 max-w-container-max mx-auto">
+<!-- Brand Column -->
+<div class="flex flex-col gap-4">
+<span class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">Safa Kesar</span>
+<p class="font-body-md text-body-md text-walnut-ink dark:text-warm-ivory opacity-80">
+                    Provenance, Purity, and Proof.
+                </p>
+</div>
+<!-- Links -->
+<div class="flex flex-col gap-3">
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-all uppercase tracking-wider" href="#">Our Story</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-all uppercase tracking-wider" href="#">Laboratory Reports</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-all uppercase tracking-wider" href="#">Bulk Inquiries</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-all uppercase tracking-wider" href="#">Privacy Policy</a>
+</div>
+<!-- Empty column for layout balance as per 4-col grid request -->
+<div class="hidden md:block"></div>
+<!-- Copyright -->
+<div class="flex items-end md:justify-end md:col-span-1">
+<p class="font-body-md text-[12px] text-walnut-ink dark:text-warm-ivory opacity-60">
+                    © 2024 Safa Kesar Pampore. Heritage of NH 44.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>
