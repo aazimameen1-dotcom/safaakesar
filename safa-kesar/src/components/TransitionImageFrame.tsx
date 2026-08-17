@@ -51,27 +51,21 @@ export default function TransitionImageFrame({
         );
       })}
 
-      {/* Floating Info Overlay */}
-      <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-none">
-        <div className="bg-surface/90 backdrop-blur-md px-3.5 py-1.5 rounded-lg border border-outline-variant shadow-sm text-xs font-label-caps text-walnut-ink flex items-center gap-1.5">
-          <Icon name="verified" className="text-[14px] text-trust-olive" />
-          <span>{images[currentIndex].label}</span>
-        </div>
-
-        {/* Indicator dots */}
-        {images.length > 1 && (
-          <div className="flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2.5 py-1.5 rounded-full">
+      {/* Indicator dots */}
+      {images.length > 1 && (
+        <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center pointer-events-none">
+          <div className="flex items-center gap-1.5 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
             {images.map((_, idx) => (
               <span
                 key={idx}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  idx === currentIndex ? "w-4 bg-primary" : "w-1.5 bg-white/50"
+                  idx === currentIndex ? "w-5 bg-secondary-container" : "w-1.5 bg-white/50"
                 }`}
               />
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -102,15 +102,8 @@ export default function HeroSlider({
       <div className="relative z-30 max-w-3xl mx-auto text-center">
         {children}
 
-        {/* Slider Controls & Live Slide Badge */}
-        <div className="mt-12 flex flex-col items-center gap-4">
-          {/* Active Image Caption Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs font-label-caps text-white/95 shadow-md transition-all">
-            <span className="inline-block w-2 h-2 rounded-full bg-secondary-container animate-pulse" />
-            <span>{HERO_SLIDES[currentIndex].badge}</span>
-          </div>
-
-          {/* Navigation Dots and Arrows */}
+        {/* Slider Navigation Controls */}
+        <div className="mt-12 flex justify-center">
           <div className="flex items-center gap-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-md">
             <button
               onClick={prevSlide}
