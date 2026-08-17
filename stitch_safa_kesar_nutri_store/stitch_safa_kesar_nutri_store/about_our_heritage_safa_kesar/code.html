@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Us | Safa Kesar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;600;700&amp;family=Hanken+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#e9c176",
+                        "on-tertiary-container": "#a9aaa7",
+                        "secondary-fixed": "#ffdea5",
+                        "inverse-on-surface": "#f3f0ec",
+                        "on-surface": "#1c1c1a",
+                        "surface-container-high": "#ebe8e4",
+                        "inverse-surface": "#31302e",
+                        "primary-fixed": "#dfe6c8",
+                        "outline-variant": "#c7c7bc",
+                        "kesar-deep-red": "#8B0000",
+                        "tertiary": "#272927",
+                        "primary-fixed-dim": "#c3caad",
+                        "tertiary-fixed": "#e2e3e0",
+                        "error-container": "#ffdad6",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#fcf9f5",
+                        "on-primary-container": "#a6ad92",
+                        "surface-container-low": "#f6f3ef",
+                        "surface": "#fcf9f5",
+                        "inverse-primary": "#c3caad",
+                        "primary-container": "#3b412c",
+                        "on-secondary-container": "#785a1a",
+                        "primary": "#252b18",
+                        "error-red": "#F44336",
+                        "on-primary-fixed-variant": "#434934",
+                        "on-secondary-fixed": "#261900",
+                        "on-surface-variant": "#46483f",
+                        "outline": "#77786e",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#3d3f3d",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#e5e2de",
+                        "surface-container": "#f0edea",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#181e0b",
+                        "on-background": "#1c1c1a",
+                        "success-green": "#4CAF50",
+                        "surface-tint": "#5b614a",
+                        "on-error-container": "#93000a",
+                        "secondary": "#775a19",
+                        "surface-dim": "#dcdad6",
+                        "surface-variant": "#e5e2de",
+                        "on-tertiary-fixed-variant": "#454745",
+                        "on-tertiary-fixed": "#1a1c1a",
+                        "tertiary-fixed-dim": "#c6c7c4",
+                        "on-tertiary": "#ffffff",
+                        "background": "#fcf9f5",
+                        "secondary-container": "#fed488"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px",
+                        "stack-sm": "8px",
+                        "stack-lg": "32px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Epilogue"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Epilogue"],
+                        "label-md": ["Hanken Grotesk"],
+                        "display-lg": ["Epilogue"],
+                        "headline-md": ["Epilogue"],
+                        "caption": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<header class="docked full-width top-0 border-b border-outline-variant flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto z-50 sticky bg-surface/95 backdrop-blur-sm">
+<div class="flex items-center gap-stack-lg">
+<a class="font-headline-md text-headline-md font-bold text-kesar-deep-red" href="/">Safa Kesar</a>
+<nav class="hidden md:flex items-center gap-stack-md">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 px-3 py-2 rounded-DEFAULT" href="#">Shop By Category</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 px-3 py-2 rounded-DEFAULT" href="#">Brands</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors duration-200 px-3 py-2 rounded-DEFAULT" href="#">Best Sellers</a>
+<a aria-current="page" class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 px-3 py-2" href="#">About Us</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-sm text-primary">
+<button aria-label="Search" class="p-2 hover:bg-surface-container-low rounded-full transition-colors duration-200 group">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button aria-label="Profile" class="p-2 hover:bg-surface-container-low rounded-full transition-colors duration-200 group">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+<button aria-label="Cart" class="p-2 hover:bg-surface-container-low rounded-full transition-colors duration-200 group">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+</button>
+<button aria-label="Favorites" class="p-2 hover:bg-surface-container-low rounded-full transition-colors duration-200 group">
+<span class="material-symbols-outlined" data-icon="favorite">favorite</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full">
+<!-- Hero Section -->
+<section class="relative w-full h-[60vh] min-h-[500px] flex items-center justify-center bg-surface-container-highest overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-40 mix-blend-multiply" data-alt="A breathtaking, cinematic wide shot of a vast saffron field at sunrise. The golden morning light casts long shadows across vibrant purple crocus flowers. In the foreground, an artisan's hands carefully pluck the delicate red threads. The mood is serene, natural, and premium, evoking a sense of heritage and agricultural purity." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAKd8qEW-PYdgAUJByjtef8kaybxn5aImc3W_rNtV3qpl7Aj0YYG5mX6xc-9JmYs9ssBjGaLDZrdvjhlLL042YiaK2uOhCCOZSEuzO8ylYkrcZCjTJSZTJmgSvzdmJ5uQMNtHDO32jxvFEL1Z1xylRyTRiugVFmkMuq9ehDwxUHVw_2P56zrOnUs2bhm8TMBzxP6KFi0x1-15XBG-XCdnbeqzBGUTRX6J3l6glYxTjqyhMaAdlOQ_st')"></div>
+<div class="relative z-10 text-center max-w-3xl px-margin-mobile md:px-margin-desktop">
+<span class="font-label-md text-label-md text-secondary tracking-widest uppercase mb-stack-sm block">Our Story</span>
+<h1 class="font-display-lg text-display-lg text-on-surface mb-stack-md">Rooted in Heritage. Crafted for Purity.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We travel the world to source the finest artisanal saffron and premium dry fruits, bringing the essence of nature's luxury directly to your table.</p>
+</div>
+</section>
+<!-- Our Heritage (Bento Grid Layout) -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-24">
+<div class="mb-stack-lg md:mb-16">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-sm">Our Heritage</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">A legacy built on trust, tradition, and an unwavering commitment to quality.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Large Feature Card -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden group">
+<div class="h-64 md:h-96 relative overflow-hidden">
+<img class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700" data-alt="Close-up photography of premium, deep red saffron threads resting in an antique brass bowl. The background is a soft, out-of-focus rustic wooden table. The lighting is warm, natural, and directional, highlighting the rich crimson color and delicate texture of the spice. High-end culinary aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIfgd9Fswdm-na1NnUlOT0yI7c8lbjcFaWfWn9c1hp0Q0vlDRoB5jhC0dCgxZS7raS98pwyfF97tAw_0Yr4NQtojJV5WhMN7E51VoPeX1VD_6MQhWUezx5eQlIpEpFPDCajRmGnEcIGWA5SVGChN9eGOYQT1S4KQg0W-QWcfpmkkh4_yUwTepSwPhk--PWlYiKGJcwG1GpJ8cu-VNoD1kua_oVIX4NI4x78Ti_ylfnSwZx0PiGencl"/>
+</div>
+<div class="p-stack-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm">The Red Gold Standard</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Safa Kesar began with a simple philosophy: to discover and share the most potent, flavorful saffron available. Our journey takes us to generational farms where traditional harvesting methods preserve the spice's legendary aroma and deep red hue.</p>
+</div>
+</div>
+<!-- Vertical Card Stack -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<div class="bg-secondary-container/20 border border-secondary/20 rounded-xl p-stack-md flex-1 flex flex-col justify-center">
+<span class="material-symbols-outlined text-secondary text-4xl mb-stack-sm" data-icon="history_edu">history_edu</span>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Decades of Trust</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Built on family values, we've maintained relationships with our artisan partners for over 30 years.</p>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-stack-md flex-1 overflow-hidden relative group">
+<img class="absolute inset-0 object-cover w-full h-full opacity-20 group-hover:opacity-30 transition-opacity duration-300" data-alt="A beautiful assortment of premium dry fruits including plump figs, golden raisins, and large cashews arranged artfully on a pristine white marble surface. Soft, diffused daylight emphasizes the natural textures and wholesome quality of the nuts. Minimalist and clean composition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfKnYoRNBg6q2qNjwTPIQ2dGMSttt0iAgqEiE3yTMz-IxzPPnTkKQ4IY-QlY_KQMe6G7WjY-z0rJqeTAlOgFNCK8sIdxH5SdJJRrgvUEAqWq4MUsn7C85BGYHW_Kc5Eag8eSwkOWJWgBeDh4B4xRo8p9MjZ-iKBZKdGHvhjrTKLS50xAnJMTl03zsB6V6-H0bPIlriVxMhz_IRFGAZMRSxiQsj6_pfzxOJMfq_1u_LTQ8CeVnxDALM"/>
+<div class="relative z-10">
+<span class="material-symbols-outlined text-primary text-4xl mb-stack-sm" data-icon="spa">spa</span>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Beyond Saffron</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Our expertise extends to curating a selection of the world's finest dry fruits, ensuring luxury in every bite.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quality Assurance (Glassmorphism Concept) -->
+<section class="relative py-stack-lg md:py-24 overflow-hidden">
+<div class="absolute inset-0 bg-primary container mx-auto rounded-3xl md:w-[95%]"></div>
+<div class="relative z-10 max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row items-center gap-gutter">
+<div class="md:w-1/2 text-on-primary">
+<span class="font-label-md text-label-md text-primary-fixed tracking-widest uppercase mb-stack-sm block">Our Promise</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-stack-md text-on-primary">Uncompromising Quality Assurance</h2>
+<p class="font-body-lg text-body-lg text-on-primary-fixed-variant mb-stack-lg">Every thread of Safa Kesar and every single nut undergoes rigorous testing. We believe that true luxury is transparent, verifiable, and consistently exceptional.</p>
+<ul class="space-y-stack-sm mb-stack-lg">
+<li class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-secondary-fixed" data-icon="verified">verified</span>
+<span class="font-body-md text-body-md">ISO Certified Processing Facilities</span>
+</li>
+<li class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-secondary-fixed" data-icon="biotech">biotech</span>
+<span class="font-body-md text-body-md">Advanced Lab Testing for Purity &amp; Potency</span>
+</li>
+<li class="flex items-center gap-stack-sm">
+<span class="material-symbols-outlined text-secondary-fixed" data-icon="pan_tool">pan_tool</span>
+<span class="font-body-md text-body-md">100% Hand-Harvested &amp; Sorted</span>
+</li>
+</ul>
+</div>
+<div class="md:w-1/2 relative w-full h-[400px]">
+<!-- Glass Card -->
+<div class="absolute inset-0 m-4 bg-surface/10 backdrop-blur-md border border-surface/20 rounded-2xl p-stack-lg flex flex-col justify-center items-center text-center shadow-2xl">
+<div class="w-24 h-24 rounded-full bg-secondary-container flex items-center justify-center mb-stack-md">
+<span class="material-symbols-outlined text-on-secondary-container text-5xl" data-icon="workspace_premium">workspace_premium</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-primary mb-2">Grade A++ Saffron</h3>
+<p class="font-body-md text-body-md text-on-primary-fixed-variant">Certified for highest crocin (color), picrocrocin (flavor), and safranal (aroma) levels.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Sustainability (Asymmetric Layout) -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-24">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter items-center">
+<div class="order-2 md:order-1 relative h-[500px] rounded-xl overflow-hidden border border-outline-variant">
+<img class="object-cover w-full h-full" data-alt="A sunlit, sustainable farm landscape showing lush green agricultural terraces. In the foreground, hands gently holding rich, dark compost soil. The imagery conveys eco-friendly farming practices, environmental responsibility, and a deep connection to the earth. Bright, optimistic, and natural lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2FLACQukyIGBLg6BApu8gEtK2-WwFImLOze-LBrtAA0GH0htSY2pzdtgglx0S8xV5Aq0YJxUuISFhm7sZdvTG1Ko5_Zo-7g6tzciV36saVKqoOUchZGFUvCUPtrzruQqSorDvnEzMe7zxI4ZqHwBySLcm9ZqP4zedksE8dtUpY82gh64qdvPtyo3k32rftPGL3w7baP7fY6ZWAZVLjzWwZiacbbvlUiZqYGz7gqMQXF-JwJxOC7P3"/>
+</div>
+<div class="order-1 md:order-2 md:pl-12">
+<span class="font-label-md text-label-md text-secondary tracking-widest uppercase mb-stack-sm block">Our Responsibility</span>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-stack-md">Nurturing the Earth that Nurtures Us</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-md">Sustainability isn't a buzzword for us; it's the foundation of our sourcing. We partner exclusively with farmers who utilize regenerative agricultural practices to protect the soil for future generations.</p>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-lg">From eco-friendly packaging initiatives to ensuring fair trade compensation for our artisan harvesters, Safa Kesar is dedicated to a wholesome, ethical supply chain.</p>
+<a class="inline-flex items-center gap-2 bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-DEFAULT hover:bg-primary-container hover:text-on-primary-container transition-colors duration-200" href="#">
+                        Read Our Impact Report
+                        <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-tertiary text-on-tertiary">
+<div class="w-full py-stack-lg px-margin-desktop grid grid-cols-1 md:grid-cols-4 gap-gutter max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<span class="font-headline-md text-headline-md font-bold text-secondary-fixed block mb-stack-sm">Safa Kesar</span>
+<p class="font-body-md text-body-md text-on-tertiary-container mb-stack-md">Pure Artisanal Heritage.</p>
+</div>
+<div class="col-span-1 md:col-span-2 grid grid-cols-2 gap-gutter">
+<div>
+<h4 class="font-label-md text-label-md text-on-tertiary mb-stack-sm uppercase tracking-wider">Company</h4>
+<ul class="space-y-2">
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">About Us</a></li>
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Quality Standards</a></li>
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Sustainability</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-tertiary mb-stack-sm uppercase tracking-wider">Help</h4>
+<ul class="space-y-2">
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Shipping Policy</a></li>
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Contact Support</a></li>
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Store Locator</a></li>
+<li><a class="font-body-md text-body-md text-on-tertiary-container hover:text-on-tertiary transition-colors duration-200" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<div class="col-span-1 md:col-span-1">
+<p class="font-caption text-caption text-on-tertiary-container mt-auto pt-stack-lg border-t border-tertiary-container/30">
+                    © 2024 Safa Kesar. Pure Artisanal Heritage. All Rights Reserved.
+                </p>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,6 +1,18 @@
 import type { Metadata } from "next";
-import { Fraunces, Work_Sans } from "next/font/google";
+import { Epilogue, Hanken_Grotesk, Fraunces, Work_Sans } from "next/font/google";
 import "./globals.css";
+
+const epilogue = Epilogue({
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
+  variable: "--font-epilogue",
+});
+
+const hankenGrotesk = Hanken_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-hanken-grotesk",
+});
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -16,11 +28,11 @@ const workSans = Work_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Safa Kesar — Pampore's Finest Saffron",
+    default: "Safa Kesar — Pure Artisanal Dry Fruits & Saffron",
     template: "%s · Safa Kesar",
   },
   description:
-    "Authentic Mongra Kesar from the saffron fields of Lethipora, Pampore. Documented, tested, and delivered with radical transparency.",
+    "Pure Artisanal Kashmiri Mongra Saffron, Walnuts, Almonds, and Organic Dry Fruits directly from Lethipora, Pampore. Sourced with radical transparency.",
 };
 
 export default function RootLayout({
@@ -30,7 +42,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${workSans.variable} h-full antialiased`}
+      className={`${epilogue.variable} ${hankenGrotesk.variable} ${fraunces.variable} ${workSans.variable} h-full antialiased`}
     >
       <head>
         <link
@@ -40,7 +52,7 @@ export default function RootLayout({
       </head>
       <body
         suppressHydrationWarning
-        className="min-h-full flex flex-col font-body-md text-body-md"
+        className="min-h-full flex flex-col font-body-md text-body-md bg-background text-on-background"
       >
         {children}
       </body>

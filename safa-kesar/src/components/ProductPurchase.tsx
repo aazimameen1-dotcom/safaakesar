@@ -35,24 +35,24 @@ export default function ProductPurchase({
   if (!variant) return null;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Price */}
       <div className="flex items-baseline gap-2">
         <span
           id="dynamic-price"
-          className="tabular font-price-display text-[28px] leading-8 font-semibold text-walnut-ink"
+          className="tabular font-headline-md text-2xl md:text-3xl font-bold text-on-surface"
         >
           {formatINR(variant.price)}
         </span>
-        <span className="font-body-md text-body-md text-on-surface-variant">
-          / <span id="dynamic-unit">{variant.label}</span>
+        <span className="font-body-md text-sm text-on-surface-variant">
+          / <span id="dynamic-unit" className="font-bold text-primary">{variant.label}</span>
         </span>
       </div>
 
       {/* Weight selector */}
       <div>
-        <p className="font-label-caps text-label-caps text-walnut-ink uppercase mb-2">
-          Select Weight
+        <p className="font-label-md text-xs font-bold text-on-surface uppercase mb-2">
+          Select Quantity / Weight
         </p>
         <div className="flex flex-wrap gap-2" role="group" aria-label="Select weight">
           {variants.map((v) => (
@@ -60,18 +60,18 @@ export default function ProductPurchase({
               key={v.label}
               onClick={() => setSelected(v.label)}
               aria-pressed={v.label === selected}
-              className={`tabular min-w-[56px] border px-4 py-2 font-label-caps text-label-caps uppercase transition-colors ${
+              className={`tabular min-w-[54px] px-3.5 py-2 rounded-lg font-label-md text-xs font-bold uppercase transition-all duration-200 ${
                 v.label === selected
-                  ? "border-primary bg-primary text-on-primary"
-                  : "border-outline-variant bg-warm-ivory text-on-surface-variant hover:border-primary hover:text-primary"
+                  ? "border-2 border-primary bg-primary text-on-primary shadow-sm"
+                  : "border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:border-primary hover:text-primary"
               }`}
             >
               {v.label}
             </button>
           ))}
         </div>
-        <p className="font-body-md text-xs text-on-surface-variant mt-2">
-          Tax included. Shipping calculated at checkout.
+        <p className="font-body-md text-[11px] text-on-surface-variant mt-2">
+          Tax included. Free shipping on orders above ₹2,000.
         </p>
       </div>
 
@@ -87,8 +87,8 @@ export default function ProductPurchase({
             image,
           })
         }
-        className={`flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-on-primary font-label-caps text-label-caps uppercase tracking-wider transition-colors ${
-          layout === "pdp" ? "w-full px-8 py-4" : "w-full md:w-auto px-8 py-4"
+        className={`flex items-center justify-center gap-2 bg-primary hover:bg-primary-container text-on-primary font-label-md text-sm uppercase tracking-wider py-3.5 rounded-lg transition-colors font-bold shadow-sm hover:shadow ${
+          layout === "pdp" ? "w-full px-8" : "w-full md:w-auto px-8"
         }`}
       >
         <Icon name="add_shopping_cart" className="text-[18px]" />

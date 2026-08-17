@@ -1,127 +1,160 @@
 @import "tailwindcss";
 
 @theme {
-  /* ── Safa Kesar palette (from Stitch DESIGN.md) ─────────────────── */
-  --color-primary: #851a08;
+  /* ── Safa Kesar Heritage Minimalism Palette (from DESIGN.md) ── */
+  --color-primary: #252b18;
   --color-on-primary: #ffffff;
-  --color-primary-container: #a6321e;
-  --color-on-primary-container: #ffc6bb;
-  --color-primary-fixed: #ffdad3;
-  --color-primary-fixed-dim: #ffb4a5;
-  --color-on-primary-fixed: #3f0400;
-  --color-on-primary-fixed-variant: #891d0b;
-  --color-inverse-primary: #ffb4a5;
+  --color-primary-container: #3b412c;
+  --color-on-primary-container: #a6ad92;
+  --color-primary-fixed: #dfe6c8;
+  --color-primary-fixed-dim: #c3caad;
+  --color-on-primary-fixed: #181e0b;
+  --color-on-primary-fixed-variant: #434934;
+  --color-inverse-primary: #c3caad;
 
-  --color-secondary: #835500;
+  --color-secondary: #775a19;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #fdba5a;
-  --color-on-secondary-container: #734a00;
-  --color-secondary-fixed: #ffddb4;
-  --color-secondary-fixed-dim: #fdba5a;
-  --color-on-secondary-fixed: #291800;
-  --color-on-secondary-fixed-variant: #633f00;
+  --color-secondary-container: #fed488;
+  --color-on-secondary-container: #785a1a;
+  --color-secondary-fixed: #ffdea5;
+  --color-secondary-fixed-dim: #e9c176;
+  --color-on-secondary-fixed: #261900;
+  --color-on-secondary-fixed-variant: #5d4201;
 
-  --color-tertiary: #00486d;
+  --color-tertiary: #272927;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #006190;
-  --color-on-tertiary-container: #add9ff;
-  --color-tertiary-fixed: #cbe6ff;
-  --color-tertiary-fixed-dim: #8ecdff;
-  --color-on-tertiary-fixed: #001e30;
-  --color-on-tertiary-fixed-variant: #004b71;
+  --color-tertiary-container: #3d3f3d;
+  --color-on-tertiary-container: #a9aaa7;
+  --color-tertiary-fixed: #e2e3e0;
+  --color-tertiary-fixed-dim: #c6c7c4;
+  --color-on-tertiary-fixed: #1a1c1a;
+  --color-on-tertiary-fixed-variant: #454745;
 
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
-  --color-background: #fff8f6;
-  --color-on-background: #251916;
-  --color-surface: #fff8f6;
-  --color-on-surface: #251916;
-  --color-on-surface-variant: #58413d;
-  --color-surface-variant: #f5ddd9;
-  --color-surface-dim: #ecd5d1;
-  --color-surface-bright: #fff8f6;
+  --color-background: #fcf9f5;
+  --color-on-background: #1c1c1a;
+  --color-surface: #fcf9f5;
+  --color-on-surface: #1c1c1a;
+  --color-on-surface-variant: #46483f;
+  --color-surface-variant: #e5e2de;
+  --color-surface-dim: #dcdad6;
+  --color-surface-bright: #fcf9f5;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #fff0ee;
-  --color-surface-container: #ffe9e5;
-  --color-surface-container-high: #fbe3de;
-  --color-surface-container-highest: #f5ddd9;
-  --color-inverse-surface: #3b2d2a;
-  --color-inverse-on-surface: #ffede9;
-  --color-outline: #8c716c;
-  --color-outline-variant: #e0bfb9;
-  --color-surface-tint: #aa3521;
+  --color-surface-container-low: #f6f3ef;
+  --color-surface-container: #f0edea;
+  --color-surface-container-high: #ebe8e4;
+  --color-surface-container-highest: #e5e2de;
+  --color-inverse-surface: #31302e;
+  --color-inverse-on-surface: #f3f0ec;
+  --color-outline: #77786e;
+  --color-outline-variant: #c7c7bc;
+  --color-surface-tint: #5b614a;
 
-  /* Brand tokens */
+  /* Brand specific tokens */
+  --color-kesar-deep-red: #8b0000;
+  --color-success-green: #4caf50;
+  --color-error-red: #f44336;
   --color-warm-ivory: #f8f3ec;
-  --color-walnut-ink: #2a241c;
-  --color-trust-olive: #5c6b4a;
+  --color-walnut-ink: #1c1c1a;
+  --color-trust-olive: #5b614a;
   --color-crocus-purple: #6b4c7a;
 
-  /* ── Typography ──────────────────────────────────────────────────── */
-  --font-headline-xl: var(--font-fraunces), Georgia, serif;
-  --font-headline-lg: var(--font-fraunces), Georgia, serif;
-  --font-headline-lg-mobile: var(--font-fraunces), Georgia, serif;
-  --font-headline-md: var(--font-fraunces), Georgia, serif;
-  --font-body-lg: var(--font-work-sans), system-ui, sans-serif;
-  --font-body-md: var(--font-work-sans), system-ui, sans-serif;
-  --font-label-caps: var(--font-work-sans), system-ui, sans-serif;
-  --font-price-display: var(--font-work-sans), system-ui, sans-serif;
+  /* ── Typography (Epilogue + Hanken Grotesk) ────────────────────────── */
+  --font-display-lg: var(--font-epilogue), Georgia, serif;
+  --font-headline-xl: var(--font-epilogue), Georgia, serif;
+  --font-headline-lg: var(--font-epilogue), Georgia, serif;
+  --font-headline-lg-mobile: var(--font-epilogue), Georgia, serif;
+  --font-headline-md: var(--font-epilogue), Georgia, serif;
+  --font-body-lg: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-body-md: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-label-md: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-label-caps: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-price-display: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-caption: var(--font-hanken-grotesk), system-ui, sans-serif;
+
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
 
   --text-headline-xl: 48px;
   --text-headline-xl--line-height: 56px;
   --text-headline-xl--letter-spacing: -0.02em;
-  --text-headline-xl--font-weight: 600;
+  --text-headline-xl--font-weight: 700;
+
   --text-headline-lg: 32px;
   --text-headline-lg--line-height: 40px;
-  --text-headline-lg--font-weight: 500;
+  --text-headline-lg--font-weight: 700;
+
   --text-headline-lg-mobile: 28px;
   --text-headline-lg-mobile--line-height: 36px;
-  --text-headline-lg-mobile--font-weight: 500;
+  --text-headline-lg-mobile--font-weight: 700;
+
   --text-headline-md: 24px;
   --text-headline-md--line-height: 32px;
-  --text-headline-md--font-weight: 500;
+  --text-headline-md--font-weight: 600;
+
   --text-body-lg: 18px;
   --text-body-lg--line-height: 28px;
   --text-body-lg--font-weight: 400;
+
   --text-body-md: 16px;
   --text-body-md--line-height: 24px;
   --text-body-md--font-weight: 400;
+
+  --text-label-md: 14px;
+  --text-label-md--line-height: 20px;
+  --text-label-md--font-weight: 600;
+
   --text-label-caps: 12px;
   --text-label-caps--line-height: 16px;
   --text-label-caps--letter-spacing: 0.05em;
   --text-label-caps--font-weight: 600;
+
   --text-price-display: 20px;
   --text-price-display--line-height: 24px;
   --text-price-display--font-weight: 600;
 
-  /* ── Shape (subtle rounding per brand) ──────────────────────────── */
+  --text-caption: 12px;
+  --text-caption--line-height: 16px;
+  --text-caption--font-weight: 400;
+
+  /* ── Shape (Soft 4px/8px per brand) ─────────────────────────────── */
   --radius: 0.25rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
+  --radius-full: 9999px;
 
-  /* ── Spacing & layout ────────────────────────────────────────────── */
+  /* ── Spacing & Layout ────────────────────────────────────────────── */
+  --spacing-stack-sm: 8px;
+  --spacing-stack-md: 16px;
+  --spacing-stack-lg: 32px;
   --spacing-gutter: 24px;
   --spacing-margin-mobile: 16px;
-  --spacing-margin-desktop: 64px;
+  --spacing-margin-desktop: 40px;
   --container-container-max: 1280px;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
+  font-family: var(--font-body-md);
 }
 
-/* Frosted panel for live/status indicators */
+/* Frosted glass panel */
 .glass-panel {
-  background: rgba(255, 248, 246, 0.85);
+  background: rgba(252, 249, 245, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-outline-variant);
 }
 
-/* "Pressed into paper" card — depth via tonal layering, not shadows */
+/* "Pressed into paper" tactile card */
 .inset-card {
   background: var(--color-warm-ivory);
   border: 1px solid var(--color-outline-variant);
@@ -147,7 +180,7 @@ body {
   user-select: none;
 }
 
-/* Tabular figures for prices — brand mandates exact, scannable numbers */
+/* Tabular figures for prices */
 .tabular {
   font-variant-numeric: tabular-nums;
 }

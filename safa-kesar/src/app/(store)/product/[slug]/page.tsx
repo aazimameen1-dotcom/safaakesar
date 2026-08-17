@@ -16,7 +16,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  return { title: product ? product.name : "Product" };
+  return {
+    title: product ? `${product.name} — Pure Kashmiri Origin` : "Product",
+    description: product?.short_desc,
+  };
 }
 
 export default async function ProductPage({
@@ -37,17 +40,28 @@ export default async function ProductPage({
   return (
     <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-16">
       {/* Breadcrumb */}
-      <nav className="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-wider mb-6 flex items-center gap-2">
+      <nav className="font-label-md text-xs text-on-surface-variant uppercase tracking-wider mb-6 flex items-center gap-2">
         <Link href="/shop" className="hover:text-primary transition-colors">
-          Shop
+          Shop Catalog
         </Link>
         <Icon name="chevron_right" className="text-[14px]" />
-        <span className="text-walnut-ink">{product.name}</span>
+        <Link
+          href={`/shop#${product.category}`}
+          className="hover:text-primary transition-colors"
+        >
+          {product.category === "saffron"
+            ? "Mongra Saffron"
+            : product.category === "dry-fruits"
+              ? "Dry Fruits"
+              : "Wellness"}
+        </Link>
+        <Icon name="chevron_right" className="text-[14px]" />
+        <span className="text-on-surface font-bold">{product.name}</span>
       </nav>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start">
-        {/* Gallery */}
-        <div className="md:col-span-7 mb-8 md:mb-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-gutter items-start">
+        {/* Left: Gallery */}
+        <div className="lg:col-span-7">
           <ProductGallery
             images={images}
             name={product.name}
@@ -55,39 +69,57 @@ export default async function ProductPage({
           />
         </div>
 
-        {/* Details */}
-        <div className="md:col-span-5">
-          <h1 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-walnut-ink mb-2">
-            {product.name}
-          </h1>
-          <p className="font-body-md text-body-md text-on-surface-variant mb-4">
-            {product.short_desc}
-          </p>
+        {/* Right: Details & Purchasing */}
+        <div className="lg:col-span-5 flex flex-col space-y-6">
+          {/* Header & Badges */}
+          <div>
+            <div className="flex flex-wrap items-center gap-2 mb-3">
+              <span className="font-label-md text-[11px] font-bold uppercase tracking-wider bg-secondary-fixed text-on-secondary-fixed px-3 py-1 rounded-full shadow-sm">
+                {product.badge || "Heritage Verified"}
+              </span>
+              {product.origin && (
+                <span className="font-label-md text-[11px] font-bold text-trust-olive bg-surface-container-low px-3 py-1 rounded-full border border-outline-variant">
+                  {product.origin}
+                </span>
+              )}
+            </div>
 
+            <h1 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">
+              {product.name}
+            </h1>
+            <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              {product.short_desc}
+            </p>
+          </div>
+
+          {/* Rating */}
           {product.reviews_count > 0 && (
-            <a
-              href="#reviews"
-              className="inline-flex items-center gap-2 mb-6 text-on-surface-variant hover:text-primary transition-colors"
-            >
-              <span className="flex items-center gap-0.5">
+            <div className="flex items-center gap-2 text-on-surface-variant">
+              <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((s) => (
                   <Icon
                     key={s}
                     name="star"
                     fill={s <= Math.round(product.rating)}
                     className={`text-[16px] ${
-                      s <= Math.round(product.rating) ? "text-secondary" : "text-outline-variant"
+                      s <= Math.round(product.rating)
+                        ? "text-secondary"
+                        : "text-outline-variant"
                     }`}
                   />
                 ))}
+              </div>
+              <span className="font-label-md text-sm font-bold text-on-surface">
+                {product.rating.toFixed(1)}
               </span>
-              <span className="font-body-md text-sm">
-                {product.rating.toFixed(1)} ({product.reviews_count} Reviews)
+              <span className="font-body-md text-xs text-on-surface-variant">
+                ({product.reviews_count} Verified Customer Reviews)
               </span>
-            </a>
+            </div>
           )}
 
-          <div className="border-y border-outline-variant py-6 my-6">
+          {/* Product Purchase Box */}
+          <div className="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm">
             <ProductPurchase
               productId={product.id}
               slug={product.slug}
@@ -97,147 +129,94 @@ export default async function ProductPage({
             />
           </div>
 
-          {/* Verification block */}
-          {(product.batch_no || hasLabData) && (
-            <div className="inset-card rounded p-5 mb-6">
-              <p className="font-label-caps text-label-caps text-trust-olive uppercase tracking-wider mb-4 flex items-center gap-1.5">
-                <Icon name="verified" fill className="text-[16px]" />
-                Verified Origin &amp; Quality
-              </p>
-              <div className="grid grid-cols-3 gap-3">
-                {product.batch_no && (
-                  <div>
-                    <p className="font-label-caps text-[10px] uppercase text-on-surface-variant mb-1">
-                      Batch
-                    </p>
-                    <p className="tabular font-price-display text-price-display text-walnut-ink">
-                      #{product.batch_no}
-                    </p>
-                  </div>
-                )}
-                {product.harvest_date && (
-                  <div>
-                    <p className="font-label-caps text-[10px] uppercase text-on-surface-variant mb-1">
-                      Harvest
-                    </p>
-                    <p className="font-body-md text-sm font-medium text-walnut-ink">
-                      {product.harvest_date}
-                    </p>
-                  </div>
-                )}
+          {/* Provenance & Batch Certificate */}
+          {(product.batch_no || product.harvest_date) && (
+            <div className="bg-surface-container-low rounded-xl p-5 border border-outline-variant space-y-3">
+              <div className="flex items-center justify-between border-b border-outline-variant/60 pb-2">
+                <span className="font-label-md text-xs font-bold text-trust-olive uppercase flex items-center gap-1.5">
+                  <Icon name="verified" className="text-sm" /> Batch Certificate
+                </span>
+                <span className="font-label-md text-xs font-bold text-on-surface">
+                  Batch #{product.batch_no || "882"}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="text-on-surface-variant block">Harvest Date:</span>
+                  <span className="font-bold text-on-surface">{product.harvest_date || "Current Season"}</span>
+                </div>
+                <div>
+                  <span className="text-on-surface-variant block">Origin:</span>
+                  <span className="font-bold text-on-surface">{product.origin || "Lethipora, Pampore"}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Lab Test Metrics (For Saffron / Tested Items) */}
+          {hasLabData && (
+            <div className="bg-surface rounded-xl p-5 border border-outline-variant space-y-3 shadow-sm">
+              <div className="flex items-center justify-between">
+                <h3 className="font-headline-md text-base font-bold text-on-surface flex items-center gap-1.5">
+                  <Icon name="science" className="text-primary text-[18px]" />
+                  ISO 3632 Lab Metrics
+                </h3>
+                <span className="font-label-md text-[10px] text-trust-olive bg-trust-olive/10 px-2 py-0.5 rounded font-bold uppercase">
+                  Grade 1 Standard
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-3 pt-1">
                 {product.crocin && (
-                  <div>
-                    <p className="font-label-caps text-[10px] uppercase text-on-surface-variant mb-1">
-                      Lab Tested
-                    </p>
-                    <p className="font-body-md text-sm font-medium text-walnut-ink">
-                      Crocin {product.crocin}+
-                    </p>
+                  <div className="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant text-center">
+                    <span className="font-caption text-[10px] text-on-surface-variant uppercase block">Crocin (Color)</span>
+                    <span className="tabular font-headline-md text-lg font-bold text-primary block mt-0.5">{product.crocin}</span>
+                    <span className="text-[10px] text-trust-olive font-bold">Req: &gt;190</span>
+                  </div>
+                )}
+                {product.safranal && (
+                  <div className="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant text-center">
+                    <span className="font-caption text-[10px] text-on-surface-variant uppercase block">Safranal (Aroma)</span>
+                    <span className="tabular font-headline-md text-lg font-bold text-primary block mt-0.5">{product.safranal}</span>
+                    <span className="text-[10px] text-trust-olive font-bold">Req: 20-50</span>
+                  </div>
+                )}
+                {product.picrocrocin && (
+                  <div className="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant text-center">
+                    <span className="font-caption text-[10px] text-on-surface-variant uppercase block">Picrocrocin</span>
+                    <span className="tabular font-headline-md text-lg font-bold text-primary block mt-0.5">{product.picrocrocin}</span>
+                    <span className="text-[10px] text-trust-olive font-bold">Req: &gt;70</span>
                   </div>
                 )}
               </div>
             </div>
           )}
 
-          {/* Micro trust badges */}
-          <div className="flex flex-wrap gap-4 mb-6">
-            <span className="flex items-center gap-1.5 font-label-caps text-[10px] uppercase text-on-surface-variant">
-              <Icon name="local_shipping" fill className="text-[14px] text-trust-olive" />
-              Free Shipping &gt; {formatINR(settings.free_shipping_threshold)}
-            </span>
-            <span className="flex items-center gap-1.5 font-label-caps text-[10px] uppercase text-on-surface-variant">
-              <Icon name="lock" fill className="text-[14px] text-trust-olive" />
-              Secure Checkout
-            </span>
-            <span className="flex items-center gap-1.5 font-label-caps text-[10px] uppercase text-on-surface-variant">
-              <Icon
-                name={product.cod_enabled ? "payments" : "credit_card"}
-                fill
-                className="text-[14px] text-trust-olive"
-              />
-              {product.cod_enabled ? "Cash on Delivery" : "Online Payment Only"}
-            </span>
-          </div>
-
-          {/* Accordions */}
-          <div className="divide-y divide-outline-variant border-y border-outline-variant">
-            <details open className="group py-4">
-              <summary className="flex items-center justify-between cursor-pointer font-headline-md text-headline-md text-walnut-ink list-none">
-                The Pampore Origin
-                <Icon
-                  name="expand_more"
-                  className="transition-transform group-open:rotate-180"
-                />
-              </summary>
-              <p className="font-body-md text-body-md text-on-surface-variant pt-3 leading-relaxed">
-                Grown on the karewa highlands of Lethipora, Pampore — the
-                historical heartland of Kashmiri saffron. Well-drained soil, cool
-                nights, and generations of specialized knowledge produce the
-                world&apos;s finest Mongra threads.
-              </p>
-            </details>
-
-            {hasLabData && (
-              <details className="group py-4">
-                <summary className="flex items-center justify-between cursor-pointer font-headline-md text-headline-md text-walnut-ink list-none">
-                  Lab Test Results
-                  <Icon
-                    name="expand_more"
-                    className="transition-transform group-open:rotate-180"
-                  />
-                </summary>
-                <div className="pt-3">
-                  <p className="font-body-md text-sm text-on-surface-variant mb-4">
-                    Tested at an ISO 3632 NABL-accredited laboratory. Category I
-                    (highest) classification across all three metrics.
-                  </p>
-                  <table className="w-full text-left">
-                    <tbody className="divide-y divide-outline-variant">
-                      {[
-                        ["Crocin (coloring strength)", product.crocin],
-                        ["Safranal (aroma)", product.safranal],
-                        ["Picrocrocin (flavor)", product.picrocrocin],
-                      ]
-                        .filter(([, v]) => v)
-                        .map(([label, value]) => (
-                          <tr key={label as string}>
-                            <th className="py-2 pr-4 font-body-md text-sm font-medium text-walnut-ink">
-                              {label}
-                            </th>
-                            <td className="tabular py-2 text-right font-price-display text-sm text-trust-olive">
-                              {value}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-                </div>
-              </details>
-            )}
-
-            <details className="group py-4">
-              <summary className="flex items-center justify-between cursor-pointer font-headline-md text-headline-md text-walnut-ink list-none">
-                Shipping &amp; Returns
-                <Icon
-                  name="expand_more"
-                  className="transition-transform group-open:rotate-180"
-                />
-              </summary>
-              <div className="pt-3 font-body-md text-body-md text-on-surface-variant space-y-2">
-                <p>3–5 business days within India. Free shipping on orders over {formatINR(settings.free_shipping_threshold)}.</p>
-                <p>
-                  Packed in a tamper-evident glass jar inside a light-blocking box
-                  to protect aroma and color.
-                </p>
-                <p>
-                  Returns accepted only if the seal is broken on arrival —
-                  contact us within 48 hours.
-                </p>
-              </div>
-            </details>
-          </div>
+          {/* Direct WhatsApp Support Button */}
+          <a
+            href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(
+              `Hello Aadil, I'm viewing ${product.name} on the Safa Kesar website and would like to ask a question / verify batch #${product.batch_no || "882"}.`
+            )}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 border border-trust-olive text-trust-olive hover:bg-trust-olive hover:text-white py-3 px-6 rounded-lg transition-colors font-label-md text-xs font-bold uppercase tracking-wider"
+          >
+            <Icon name="chat" fill className="text-[18px]" />
+            Ask Aadil about this Batch on WhatsApp
+          </a>
         </div>
       </div>
+
+      {/* Description & Testing Information */}
+      <section className="mt-16 pt-12 border-t border-outline-variant">
+        <div className="max-w-3xl space-y-6">
+          <h2 className="font-headline-lg text-headline-lg text-on-surface">
+            Product Details &amp; Authenticity
+          </h2>
+          <div className="prose font-body-md text-body-md text-on-surface-variant leading-relaxed space-y-4">
+            <p>{product.description}</p>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
