@@ -48,3 +48,23 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Database:** SQLite via native `node:sqlite`
 - **Typography:** Fraunces, Work Sans, Material Symbols Outlined
 - **Security:** Node Crypto (scrypt, HMAC-SHA256, timingSafeEqual)
+
+---
+
+## 📂 Repository Structure
+
+```
+.
+├── safa-kesar/              # Next.js 16 Production Web Application
+│   ├── src/
+│   │   ├── app/             # App Router (Pages, Admin, API Routes)
+│   │   ├── components/      # React UI Components (HeroSlider, CartDrawer, Gallery)
+│   │   └── lib/             # SQLite Data Access, Auth, Security, Formatting
+│   ├── public/              # High-Res Google Maps Photography & Media
+│   └── package.json         # Web App Dependencies & Scripts
+├── design-concepts/         # UI Screen Concept Mockups & Stitch Framework
+├── .agents/                 # Developer Workflows, Rules & Skills
+├── Dockerfile               # Multi-Stage Production Container Specification
+├── render.yaml              # Render 1-Click Deployment Blueprint
+└── README.md                # Project Overview & Setup Instructions
+```
