@@ -41,7 +41,9 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
             </li>
             <li>
               <a
-                href={`https://wa.me/${settings.whatsapp_number}`}
+                href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(
+                  "Hello Safa Kesar, I would like to make a bulk inquiry for Kashmiri Saffron & Dry Fruits."
+                )}`}
                 target="_blank"
                 rel="noreferrer"
                 className="font-body-md text-body-md text-on-surface-variant hover:text-secondary transition-all block"
@@ -74,7 +76,9 @@ export default function Footer({ settings }: { settings: SiteSettings }) {
           <div className="flex items-center gap-2 text-trust-olive">
             <Icon name="qr_code_2" className="text-[18px]" />
             <a
-              href={`https://wa.me/${settings.whatsapp_number}`}
+              href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(
+                "Hello Safa Kesar, I have a question about your Kashmiri Saffron and Dry Fruits products."
+              )}`}
               target="_blank"
               rel="noreferrer"
               className="font-label-caps text-label-caps uppercase hover:underline"

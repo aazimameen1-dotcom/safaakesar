@@ -33,7 +33,9 @@ export default function VisitPage() {
             </p>
             <div className="pt-2 flex flex-wrap gap-4">
               <a
-                href={`https://wa.me/${settings.whatsapp_number}`}
+                href={`https://wa.me/${settings.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(
+                  "Hello Aadil, I'm visiting the Safa Kesar website and would like to inquire about placing an order / visiting your NH 44 showroom in Lethipora, Pampore."
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center bg-trust-olive text-white px-6 py-3.5 rounded-full hover:bg-[#4a563b] transition-colors shadow-sm"

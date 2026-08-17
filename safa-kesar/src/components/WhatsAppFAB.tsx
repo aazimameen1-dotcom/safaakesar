@@ -7,9 +7,19 @@ export default function WhatsAppFAB({
   number: string;
   label: string;
 }) {
+  const cleanNumber = number ? number.replace(/\D/g, "") : "";
+  const finalNumber =
+    cleanNumber.length === 10 ? `91${cleanNumber}` : cleanNumber;
+  const message = encodeURIComponent(
+    "Hello Safa Kesar! 🌾 I am browsing your online store and would like to inquire about authentic Kashmiri Saffron & Dry Fruits."
+  );
+  const href = finalNumber
+    ? `https://wa.me/${finalNumber}?text=${message}`
+    : `https://wa.me/?text=${message}`;
+
   return (
     <a
-      href={`https://wa.me/${number}`}
+      href={href}
       target="_blank"
       rel="noreferrer"
       aria-label={label}
