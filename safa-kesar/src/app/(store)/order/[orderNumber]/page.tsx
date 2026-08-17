@@ -24,7 +24,7 @@ export default async function OrderConfirmationPage({
   );
 
   return (
-    <main className="max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop py-12 md:py-24">
+    <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
       {/* Confirmation header */}
       <div className="text-center mb-12">
         <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-trust-olive/10 border border-trust-olive/30 mb-6">

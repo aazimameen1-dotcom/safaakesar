@@ -52,7 +52,7 @@ export default async function ShopPage({
   const wellness = products.filter((p) => p.category === "wellness");
 
   return (
-    <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-8 md:py-16">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       {/* Header */}
       <div className="mb-10 md:mb-14">
         <span className="font-label-md text-xs text-trust-olive uppercase tracking-widest font-bold mb-2 block">

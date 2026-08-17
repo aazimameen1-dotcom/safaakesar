@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "How to Identify Real Saffron" };
 
 export default function EducationPage() {
   return (
-    <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 space-y-24">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 space-y-16 md:space-y-20">
       {/* Header */}
       <header id="origin" className="text-center max-w-3xl mx-auto space-y-6 scroll-mt-32">
         <p className="font-label-caps text-label-caps text-trust-olive tracking-widest uppercase">

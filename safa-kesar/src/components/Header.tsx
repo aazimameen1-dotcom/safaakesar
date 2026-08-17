@@ -32,7 +32,7 @@ export default function Header() {
     <>
       {/* TopNavBar (Web) */}
       <header className="bg-surface/95 backdrop-blur-md border-b border-outline-variant sticky top-0 z-50 transition-all duration-300">
-        <div className="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-3.5 max-w-container-max mx-auto">
+        <div className="flex justify-between items-center w-full px-4 sm:px-6 lg:px-8 py-3.5 max-w-7xl mx-auto">
           {/* Brand Logo & Search */}
           <div className="flex items-center gap-6 lg:gap-8">
             <Link

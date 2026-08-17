@@ -66,7 +66,7 @@ export default function HeroSlider({
 
   return (
     <div
-      className="relative min-h-[640px] md:min-h-[920px] flex items-center justify-center overflow-hidden px-margin-mobile md:px-margin-desktop py-24"
+      className="relative min-h-[480px] md:min-h-[580px] flex items-center justify-center overflow-hidden rounded-2xl px-6 md:px-12 py-16 md:py-24 shadow-md border border-outline-variant"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -93,9 +93,9 @@ export default function HeroSlider({
           );
         })}
 
-        {/* Natural Lighting Overlay: Balanced warmth without heavy darkening or white washout */}
-        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/45 via-black/15 to-black/30" />
-        <div className="absolute inset-0 z-20 bg-gradient-to-b from-black/25 via-transparent to-black/40" />
+        {/* Natural Lighting Overlay */}
+        <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/55 via-black/25 to-black/35" />
+        <div className="absolute inset-0 z-20 bg-gradient-to-b from-black/30 via-transparent to-black/45" />
       </div>
 
       {/* Hero Content Foreground */}
@@ -103,7 +103,7 @@ export default function HeroSlider({
         {children}
 
         {/* Slider Navigation Controls */}
-        <div className="mt-12 flex justify-center">
+        <div className="mt-8 md:mt-10 flex justify-center">
           <div className="flex items-center gap-3 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 shadow-md">
             <button
               onClick={prevSlide}

@@ -1,4 +1,12 @@
-import { getDb, type ProductRow, type VariantRow } from "./db";
+import {
+  getDb,
+  type ProductRow,
+  type VariantRow,
+  type OrderRow,
+  type CouponRow,
+  type GalleryImageRow,
+  type ReviewRow,
+} from "./db";
 
 // node:sqlite returns null-prototype rows, which React can't serialize
 // across the server→client boundary — normalize to plain objects.
@@ -103,17 +111,199 @@ export function getProductBySlug(slug: string): ProductWithVariants | null {
   const row = plainOne<ProductRow>(
     getDb().prepare("SELECT * FROM products WHERE slug = ?").get(slug)
   );
-  return row ? attachVariants([row])[0] : null;
+  if (!row) return null;
+  const variants = plain<VariantRow>(
+    getDb()
+      .prepare("SELECT * FROM product_variants WHERE product_id = ? ORDER BY sort_order, id")
+      .all(row.id)
+  );
+  return { ...row, variants };
 }
 
 export function getProductById(id: number): ProductWithVariants | null {
   const row = plainOne<ProductRow>(
     getDb().prepare("SELECT * FROM products WHERE id = ?").get(id)
   );
-  return row ? attachVariants([row])[0] : null;
+  if (!row) return null;
+  const variants = plain<VariantRow>(
+    getDb()
+      .prepare("SELECT * FROM product_variants WHERE product_id = ? ORDER BY sort_order, id")
+      .all(row.id)
+  );
+  return { ...row, variants };
 }
 
-/* ── Orders ────────────────────────────────────────────────────────── */
+/* ── Coupons ────────────────────────────────────────────────────────── */
+
+export function getCoupons(): CouponRow[] {
+  return plain<CouponRow>(
+    getDb().prepare("SELECT * FROM coupons ORDER BY id DESC").all()
+  );
+}
+
+export function getCouponByCode(code: string): CouponRow | null {
+  const c = plainOne<CouponRow>(
+    getDb().prepare("SELECT * FROM coupons WHERE UPPER(code) = UPPER(?) AND active = 1").get(code.trim())
+  );
+  return c ?? null;
+}
+
+export function validateCoupon(
+  code: string,
+  subtotal: number // paise
+): { valid: boolean; discount: number; message: string; coupon?: CouponRow } {
+  if (!code.trim()) return { valid: false, discount: 0, message: "Enter a coupon code" };
+  const coupon = getCouponByCode(code);
+  if (!coupon) {
+    return { valid: false, discount: 0, message: "Invalid or expired coupon code" };
+  }
+  if (coupon.usage_limit > 0 && coupon.times_used >= coupon.usage_limit) {
+    return { valid: false, discount: 0, message: "Coupon usage limit reached" };
+  }
+  if (subtotal < coupon.min_order_amount) {
+    const minRupees = Math.round(coupon.min_order_amount / 100);
+    return {
+      valid: false,
+      discount: 0,
+      message: `Minimum order amount of ₹${minRupees} required for this coupon`,
+    };
+  }
+
+  let discount = 0;
+  if (coupon.discount_type === "percent") {
+    discount = Math.round((subtotal * coupon.discount_value) / 100);
+    if (coupon.max_discount > 0) {
+      discount = Math.min(discount, coupon.max_discount);
+    }
+  } else {
+    discount = coupon.discount_value;
+  }
+  discount = Math.min(discount, subtotal);
+
+  return {
+    valid: true,
+    discount,
+    message: `Coupon "${coupon.code}" applied successfully!`,
+    coupon,
+  };
+}
+
+export function saveCoupon(data: {
+  id?: number | null;
+  code: string;
+  discount_type: "percent" | "flat";
+  discount_value: number;
+  min_order_amount: number;
+  max_discount: number;
+  usage_limit: number;
+  active: number;
+}) {
+  const db = getDb();
+  if (data.id) {
+    db.prepare(`
+      UPDATE coupons SET
+        code = UPPER(?), discount_type = ?, discount_value = ?,
+        min_order_amount = ?, max_discount = ?, usage_limit = ?, active = ?
+      WHERE id = ?
+    `).run(
+      data.code.trim(),
+      data.discount_type,
+      data.discount_value,
+      data.min_order_amount,
+      data.max_discount,
+      data.usage_limit,
+      data.active,
+      data.id
+    );
+  } else {
+    db.prepare(`
+      INSERT INTO coupons (code, discount_type, discount_value, min_order_amount, max_discount, usage_limit, active)
+      VALUES (UPPER(?), ?, ?, ?, ?, ?, ?)
+    `).run(
+      data.code.trim(),
+      data.discount_type,
+      data.discount_value,
+      data.min_order_amount,
+      data.max_discount,
+      data.usage_limit,
+      data.active
+    );
+  }
+}
+
+export function deleteCoupon(id: number) {
+  getDb().prepare("DELETE FROM coupons WHERE id = ?").run(id);
+}
+
+/* ── Gallery Images ─────────────────────────────────────────────────── */
+
+export function getGalleryImages(category?: string): GalleryImageRow[] {
+  const db = getDb();
+  if (category && category !== "all") {
+    return plain<GalleryImageRow>(
+      db.prepare("SELECT * FROM gallery_images WHERE category = ? ORDER BY sort_order, id DESC").all(category)
+    );
+  }
+  return plain<GalleryImageRow>(
+    db.prepare("SELECT * FROM gallery_images ORDER BY sort_order, id DESC").all()
+  );
+}
+
+export function saveGalleryImage(url: string, title: string, category: string) {
+  getDb().prepare(`
+    INSERT INTO gallery_images (url, title, category)
+    VALUES (?, ?, ?)
+  `).run(url, title, category);
+}
+
+export function deleteGalleryImage(id: number) {
+  getDb().prepare("DELETE FROM gallery_images WHERE id = ?").run(id);
+}
+
+/* ── Customer Reviews ───────────────────────────────────────────────── */
+
+export function getReviews(featuredOnly = false): ReviewRow[] {
+  const db = getDb();
+  if (featuredOnly) {
+    return plain<ReviewRow>(
+      db.prepare("SELECT * FROM reviews WHERE featured = 1 ORDER BY id DESC").all()
+    );
+  }
+  return plain<ReviewRow>(
+    db.prepare("SELECT * FROM reviews ORDER BY id DESC").all()
+  );
+}
+
+export function saveReview(data: {
+  author_name: string;
+  rating: number;
+  comment: string;
+  source: string;
+  verified: number;
+  featured: number;
+}) {
+  getDb().prepare(`
+    INSERT INTO reviews (author_name, rating, comment, source, verified, featured)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    data.author_name,
+    data.rating,
+    data.comment,
+    data.source,
+    data.verified,
+    data.featured
+  );
+}
+
+export function deleteReview(id: number) {
+  getDb().prepare("DELETE FROM reviews WHERE id = ?").run(id);
+}
+
+export function toggleReviewFeatured(id: number, featured: number) {
+  getDb().prepare("UPDATE reviews SET featured = ? WHERE id = ?").run(featured, id);
+}
+
+/* ── Orders ─────────────────────────────────────────────────────────── */
 
 export type NewOrderItem = {
   productId: number;
@@ -122,15 +312,16 @@ export type NewOrderItem = {
 };
 
 export type NewOrderCustomer = {
-  customer_name: string;
+  name: string;
   phone: string;
-  email: string;
+  email?: string;
   address: string;
   city: string;
   state: string;
   pincode: string;
-  notes: string;
-  payment_method: "cod" | "online";
+  notes?: string;
+  paymentMethod: "cod" | "online";
+  couponCode?: string;
 };
 
 export class OrderError extends Error {}
@@ -139,120 +330,132 @@ export function createOrder(
   items: NewOrderItem[],
   customer: NewOrderCustomer
 ): { orderNumber: string } {
-  if (!items.length) throw new OrderError("Cart is empty");
+  if (!items || items.length === 0) {
+    throw new OrderError("Cart is empty");
+  }
+  if (
+    !customer.name?.trim() ||
+    !customer.phone?.trim() ||
+    !customer.address?.trim() ||
+    !customer.city?.trim() ||
+    !customer.state?.trim() ||
+    !customer.pincode?.trim()
+  ) {
+    throw new OrderError("Please fill in all required shipping fields");
+  }
+  if (!["cod", "online"].includes(customer.paymentMethod)) {
+    throw new OrderError("Invalid payment method");
+  }
+
   const db = getDb();
   const settings = getSettings();
 
-  // Prices are always recomputed from the database — never trusted from the client.
+  if (customer.paymentMethod === "cod" && !settings.cod_enabled) {
+    throw new OrderError(
+      "Cash on Delivery is currently unavailable. Please pay online."
+    );
+  }
+
+  // Server-side price calculation
+  const productIds = Array.from(new Set(items.map((i) => i.productId)));
+  const products = getAllProducts().filter((p) => productIds.includes(p.id));
+  const productMap = new Map(products.map((p) => [p.id, p]));
+
+  let subtotal = 0;
   const lines: {
     productId: number;
     name: string;
     variantLabel: string;
     unitPrice: number;
     qty: number;
-    codEnabled: boolean;
   }[] = [];
+
   for (const item of items) {
-    const qty = Math.floor(Number(item.qty));
-    if (!Number.isFinite(qty) || qty < 1 || qty > 99)
-      throw new OrderError(`Invalid quantity for an item`);
-    const product = db
-      .prepare("SELECT * FROM products WHERE id = ? AND active = 1")
-      .get(item.productId) as ProductRow | undefined;
-    if (!product) throw new OrderError("A product in your cart is unavailable");
-    const variant = (
-      db
-        .prepare("SELECT * FROM product_variants WHERE product_id = ?")
-        .all(item.productId) as VariantRow[]
-    ).find((v) => v.label === item.variantLabel);
-    if (!variant) throw new OrderError(`No variant ${item.variantLabel} for ${product.name}`);
+    const p = productMap.get(item.productId);
+    if (!p || !p.active) {
+      throw new OrderError("A product in your cart is no longer available");
+    }
+    if (customer.paymentMethod === "cod" && !p.cod_enabled) {
+      throw new OrderError(
+        `Cash on Delivery is unavailable for ${p.name}. Please select online payment or remove this item.`
+      );
+    }
+    const variant = p.variants.find((v) => v.label === item.variantLabel);
+    if (!variant) {
+      throw new OrderError(
+        `Selected variant is no longer available for ${p.name}`
+      );
+    }
+    const qty = Math.max(1, Math.floor(item.qty));
+    subtotal += variant.price * qty;
     lines.push({
-      productId: product.id,
-      name: product.name,
+      productId: p.id,
+      name: p.name,
       variantLabel: variant.label,
       unitPrice: variant.price,
       qty,
-      codEnabled: product.cod_enabled === 1,
     });
   }
 
-  const subtotal = lines.reduce((s, l) => s + l.unitPrice * l.qty, 0);
   const shipping =
     subtotal >= settings.free_shipping_threshold ? 0 : settings.flat_shipping;
-  const total = subtotal + shipping;
 
-  const required: [keyof NewOrderCustomer, string][] = [
-    ["customer_name", "Name"],
-    ["phone", "Phone"],
-    ["address", "Address"],
-    ["city", "City"],
-    ["state", "State"],
-    ["pincode", "PIN code"],
-  ];
-  for (const [field, label] of required) {
-    if (!String(customer[field] ?? "").trim())
-      throw new OrderError(`${label} is required`);
+  // Coupon validation
+  let discountAmount = 0;
+  let appliedCouponCode = "";
+  if (customer.couponCode?.trim()) {
+    const couponRes = validateCoupon(customer.couponCode, subtotal);
+    if (couponRes.valid) {
+      discountAmount = couponRes.discount;
+      appliedCouponCode = couponRes.coupon?.code ?? customer.couponCode.toUpperCase();
+      // Increment coupon usage
+      db.prepare("UPDATE coupons SET times_used = times_used + 1 WHERE UPPER(code) = UPPER(?)").run(appliedCouponCode);
+    }
   }
 
-  const name = String(customer.customer_name ?? "").trim().slice(0, 100);
-  const rawPhone = String(customer.phone ?? "").replace(/\D/g, "");
-  if (rawPhone.length < 10)
-    throw new OrderError("Enter a valid 10-digit phone number");
-  const phone = rawPhone.slice(-10);
+  const total = Math.max(0, subtotal - discountAmount) + shipping;
 
-  const rawPincode = String(customer.pincode ?? "").replace(/\D/g, "");
-  if (!/^\d{6}$/.test(rawPincode))
-    throw new OrderError("Enter a valid 6-digit PIN code");
-  const pincode = rawPincode;
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  const orderNumber = `SK-${y}${m}-${rand}`;
 
-  const email = String(customer.email ?? "").trim().slice(0, 150);
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    throw new OrderError("Enter a valid email address");
-  }
+  const insertOrder = db.prepare(`
+    INSERT INTO orders (
+      order_number, customer_name, phone, email, address, city, state, pincode,
+      notes, payment_method, payment_status, status, subtotal, shipping,
+      coupon_code, discount_amount, total
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?)
+  `);
 
-  const address = String(customer.address ?? "").trim().slice(0, 300);
-  const city = String(customer.city ?? "").trim().slice(0, 100);
-  const state = String(customer.state ?? "").trim().slice(0, 100);
-  const notes = String(customer.notes ?? "").trim().slice(0, 500);
-
-  if (customer.payment_method !== "cod" && customer.payment_method !== "online")
-    throw new OrderError("Invalid payment method");
-  if (customer.payment_method === "cod" && !settings.cod_enabled)
-    throw new OrderError("Cash on Delivery is currently unavailable");
-  if (customer.payment_method === "cod" && lines.some((l) => !l.codEnabled))
-    throw new OrderError(
-      "Cash on Delivery is not available for some items in your cart"
-    );
-
-  const insertOrder = db.prepare(`INSERT INTO orders
-    (order_number, customer_name, phone, email, address, city, state, pincode, notes,
-     payment_method, payment_status, status, subtotal, shipping, total)
-    VALUES ('PENDING', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)`);
   const result = insertOrder.run(
-    name,
-    phone,
-    email,
-    address,
-    city,
-    state,
-    pincode,
-    notes,
-    customer.payment_method,
-    customer.payment_method === "online" ? "paid-demo" : "pending",
+    orderNumber,
+    customer.name.trim(),
+    customer.phone.trim(),
+    customer.email?.trim() ?? "",
+    customer.address.trim(),
+    customer.city.trim(),
+    customer.state.trim(),
+    customer.pincode.trim(),
+    customer.notes?.trim() ?? "",
+    customer.paymentMethod,
+    customer.paymentMethod === "online" ? "paid" : "pending",
     subtotal,
     shipping,
+    appliedCouponCode,
+    discountAmount,
     total
   );
-  const orderId = Number(result.lastInsertRowid);
-  const orderNumber = `SK-${1000 + orderId}`;
-  db.prepare("UPDATE orders SET order_number = ? WHERE id = ?").run(
-    orderNumber,
-    orderId
-  );
 
-  const insertItem = db.prepare(`INSERT INTO order_items
+  const orderId = Number(result.lastInsertRowid);
+
+  const insertItem = db.prepare(`
+    INSERT INTO order_items
     (order_id, product_id, product_name, variant_label, unit_price, qty, line_total)
-    VALUES (?, ?, ?, ?, ?, ?, ?)`);
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `);
+
   for (const l of lines) {
     insertItem.run(
       orderId,
@@ -264,28 +467,9 @@ export function createOrder(
       l.unitPrice * l.qty
     );
   }
+
   return { orderNumber };
 }
-
-export type OrderRow = {
-  id: number;
-  order_number: string;
-  customer_name: string;
-  phone: string;
-  email: string;
-  address: string;
-  city: string;
-  state: string;
-  pincode: string;
-  notes: string;
-  payment_method: string;
-  payment_status: string;
-  status: string;
-  subtotal: number;
-  shipping: number;
-  total: number;
-  created_at: string;
-};
 
 export type OrderItemRow = {
   id: number;
@@ -349,6 +533,14 @@ export function updateOrderStatus(id: number, status: string) {
   getDb().prepare("UPDATE orders SET status = ? WHERE id = ?").run(status, id);
 }
 
+export function updateOrderTracking(id: number, trackingNumber: string, carrier = "Delhivery") {
+  getDb().prepare("UPDATE orders SET tracking_number = ?, tracking_carrier = ? WHERE id = ?").run(
+    trackingNumber.trim(),
+    carrier.trim(),
+    id
+  );
+}
+
 /* ── Dashboard stats ───────────────────────────────────────────────── */
 
 export function getDashboardStats() {
@@ -374,10 +566,32 @@ export function getDashboardStats() {
       .get() as { n: number }
   ).n;
   const avg = orderCount > 0 ? Math.round(revenue / orderCount) : 0;
+  
+  // Payment split
+  const codCount = (
+    db.prepare("SELECT COUNT(*) AS n FROM orders WHERE payment_method = 'cod'").get() as { n: number }
+  ).n;
+  const onlineCount = (
+    db.prepare("SELECT COUNT(*) AS n FROM orders WHERE payment_method = 'online'").get() as { n: number }
+  ).n;
+
+  // Low stock variants (< 20 units)
+  const lowStock = plain<{ product_name: string; label: string; stock: number }>(
+    db.prepare(`
+      SELECT p.name AS product_name, v.label, v.stock
+      FROM product_variants v
+      JOIN products p ON p.id = v.product_id
+      WHERE v.stock < 20 AND p.active = 1
+      ORDER BY v.stock ASC
+      LIMIT 5
+    `).all()
+  );
+
   const topProducts = db
     .prepare(`SELECT product_name, SUM(qty) AS qty, SUM(line_total) AS revenue
               FROM order_items GROUP BY product_name ORDER BY qty DESC LIMIT 5`)
     .all() as { product_name: string; qty: number; revenue: number }[];
+
   const statusCounts = Object.fromEntries(
     (
       db
@@ -385,5 +599,17 @@ export function getDashboardStats() {
         .all() as { status: string; n: number }[]
     ).map((r) => [r.status, r.n])
   );
-  return { revenue, orderCount, pending, productCount, avg, topProducts, statusCounts };
+
+  return {
+    revenue,
+    orderCount,
+    pending,
+    productCount,
+    avg,
+    codCount,
+    onlineCount,
+    lowStock,
+    topProducts,
+    statusCounts,
+  };
 }

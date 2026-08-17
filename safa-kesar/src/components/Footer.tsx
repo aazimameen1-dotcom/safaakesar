@@ -5,7 +5,7 @@ import type { SiteSettings } from "@/lib/queries";
 export default function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="bg-surface-container border-t border-outline-variant pb-24 md:pb-0">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop py-16 max-w-container-max mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
         <div className="col-span-1 md:col-span-2">
           <div className="font-headline-md text-headline-md font-bold text-kesar-deep-red mb-3 flex items-center gap-2">
             <Icon name="spa" fill className="text-secondary" />

@@ -227,10 +227,10 @@ export default function StorePhotoGallery({
             <Icon name="photo_camera" className="text-[14px]" />
             Verified Google Maps Gallery
           </div>
-          <h2 className="font-headline-lg text-headline-lg text-walnut-ink">
+          <h2 className="font-headline-lg text-2xl sm:text-3xl font-bold text-on-surface">
             {title}
           </h2>
-          <p className="font-body-md text-body-md text-on-surface-variant max-w-2xl mt-1">
+          <p className="font-body-md text-sm sm:text-base text-on-surface-variant max-w-2xl mt-1">
             {subtitle}
           </p>
         </div>

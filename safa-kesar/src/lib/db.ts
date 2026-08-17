@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS product_variants (
   product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   label TEXT NOT NULL,
   price INTEGER NOT NULL,
+  stock INTEGER DEFAULT 100,
   sort_order INTEGER DEFAULT 0
 );
 
@@ -59,7 +60,11 @@ CREATE TABLE IF NOT EXISTS orders (
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'shipped', 'delivered', 'cancelled')),
   subtotal INTEGER NOT NULL,
   shipping INTEGER NOT NULL,
+  coupon_code TEXT DEFAULT '',
+  discount_amount INTEGER DEFAULT 0,
   total INTEGER NOT NULL,
+  tracking_number TEXT DEFAULT '',
+  tracking_carrier TEXT DEFAULT 'Delhivery',
   created_at TEXT DEFAULT (datetime('now'))
 );
 
@@ -78,6 +83,40 @@ CREATE TABLE IF NOT EXISTS settings (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS coupons (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  code TEXT UNIQUE NOT NULL,
+  discount_type TEXT NOT NULL CHECK (discount_type IN ('percent', 'flat')),
+  discount_value INTEGER NOT NULL,
+  min_order_amount INTEGER DEFAULT 0,
+  max_discount INTEGER DEFAULT 0,
+  usage_limit INTEGER DEFAULT 0,
+  times_used INTEGER DEFAULT 0,
+  active INTEGER DEFAULT 1,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS gallery_images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  url TEXT NOT NULL,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL DEFAULT 'showroom',
+  sort_order INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER,
+  author_name TEXT NOT NULL,
+  rating INTEGER NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT NOT NULL,
+  source TEXT DEFAULT 'google_maps',
+  verified INTEGER DEFAULT 1,
+  featured INTEGER DEFAULT 0,
+  created_at TEXT DEFAULT (datetime('now'))
+);
 `;
 
 export type ProductRow = {
@@ -88,7 +127,6 @@ export type ProductRow = {
   short_desc: string;
   description: string;
   image: string;
-  /** JSON array of additional gallery images shown on the product page */
   images: string;
   badge: string;
   rating: number;
@@ -99,7 +137,6 @@ export type ProductRow = {
   safranal: string;
   picrocrocin: string;
   origin: string;
-  /** per-product Cash on Delivery switch; order-level COD requires every item on */
   cod_enabled: number;
   sort_order: number;
   active: number;
@@ -111,7 +148,66 @@ export type VariantRow = {
   product_id: number;
   label: string;
   price: number;
+  stock: number;
   sort_order: number;
+};
+
+export type OrderRow = {
+  id: number;
+  order_number: string;
+  customer_name: string;
+  phone: string;
+  email: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  notes: string;
+  payment_method: "cod" | "online";
+  payment_status: string;
+  status: "pending" | "confirmed" | "shipped" | "delivered" | "cancelled";
+  subtotal: number;
+  shipping: number;
+  coupon_code: string;
+  discount_amount: number;
+  total: number;
+  tracking_number: string;
+  tracking_carrier: string;
+  created_at: string;
+};
+
+export type CouponRow = {
+  id: number;
+  code: string;
+  discount_type: "percent" | "flat";
+  discount_value: number; // percent or paise
+  min_order_amount: number; // paise
+  max_discount: number; // paise
+  usage_limit: number;
+  times_used: number;
+  active: number;
+  created_at: string;
+};
+
+export type GalleryImageRow = {
+  id: number;
+  url: string;
+  title: string;
+  category: "showroom" | "harvest" | "packaging" | "tea-lounge";
+  sort_order: number;
+  created_at: string;
+};
+
+export type ReviewRow = {
+  id: number;
+  product_id: number | null;
+  author_name: string;
+  rating: number;
+  comment: string;
+  source: "website" | "google_maps";
+  verified: number;
+  featured: number;
+  created_at: string;
 };
 
 const DEFAULT_SETTINGS: Record<string, string> = {
@@ -144,7 +240,7 @@ type SeedProduct = {
   safranal?: string;
   picrocrocin?: string;
   origin?: string;
-  variants: [label: string, rupees: number][];
+  variants: [label: string, rupees: number, stock?: number][];
 };
 
 const SEED_PRODUCTS: SeedProduct[] = [
@@ -168,7 +264,7 @@ const SEED_PRODUCTS: SeedProduct[] = [
       "/images/pdp-tweezers.jpg",
     ],
     badge: "Batch Verified",
-    rating: 4.8,
+    rating: 4.9,
     reviews_count: 124,
     batch_no: "882",
     harvest_date: "Oct 2023",
@@ -177,11 +273,11 @@ const SEED_PRODUCTS: SeedProduct[] = [
     picrocrocin: "95",
     origin: "Pampore, Kashmir (34.02° N)",
     variants: [
-      ["0.5g", 300],
-      ["1g", 550],
-      ["5g", 2650],
-      ["10g", 5100],
-      ["25g", 12250],
+      ["0.5g", 300, 150],
+      ["1g", 550, 200],
+      ["5g", 2650, 80],
+      ["10g", 5100, 45],
+      ["25g", 12250, 20],
     ],
   },
   {
@@ -198,94 +294,108 @@ const SEED_PRODUCTS: SeedProduct[] = [
       "/google-maps/safa-kesar-map-22.jpg",
       "/images/walnuts.jpg",
     ],
-    rating: 4.7,
-    reviews_count: 58,
-    variants: [["500g", 850]],
+    badge: "Cold-Pressed Grade",
+    rating: 4.8,
+    reviews_count: 86,
+    batch_no: "W-412",
+    harvest_date: "Nov 2023",
+    origin: "Anantnag Orchards, Kashmir",
+    variants: [
+      ["250g", 420, 100],
+      ["500g", 800, 120],
+      ["1kg", 1550, 60],
+    ],
   },
   {
-    slug: "mamra-almonds",
-    name: "Mamra Almonds",
+    slug: "kashmiri-mamra-almonds",
+    name: "Kashmiri Mamra Badam",
     category: "dry-fruits",
     short_desc:
-      "Rare, nutrient-dense almonds sourced from select orchards.",
+      "Concave shape, intensely sweet kernel with the highest natural oil content of any almond variety.",
     description:
-      "Mamra almonds are grown in small, select orchards and harvested in limited quantities. Dense in oils and nutrients, with an intense natural sweetness compared to commercial varieties.",
-    image: "/google-maps/safa-kesar-map-10.jpg",
+      "Genuine Kashmiri Mamra almonds grown in high-altitude orchards. Unlike California imports, Kashmiri Mamra contains up to 50% natural oil, offering a richer flavor and concentrated nutrient profile.",
+    image: "/google-maps/safa-kesar-map-06.jpg",
     gallery: [
-      "/google-maps/safa-kesar-map-10.jpg",
-      "/google-maps/safa-kesar-map-05.jpg",
+      "/google-maps/safa-kesar-map-06.jpg",
       "/images/mamra-almonds.jpg",
     ],
+    badge: "High-Oil Variety",
     rating: 4.9,
-    reviews_count: 41,
-    variants: [["250g", 1200]],
-  },
-  {
-    slug: "premium-pecans",
-    name: "Premium Pecans",
-    category: "dry-fruits",
-    short_desc:
-      "Rich, buttery pecans perfect for culinary or direct consumption.",
-    description:
-      "Large, uniformly graded pecan halves with a rich, buttery profile. Cracked and packed the week they arrive from the grower.",
-    image: "/images/pecans.jpg",
-    gallery: [
-      "/images/pecans.jpg",
-      "/google-maps/safa-kesar-map-22.jpg",
+    reviews_count: 73,
+    batch_no: "MB-108",
+    harvest_date: "Sep 2023",
+    origin: "Pulwama, Kashmir",
+    variants: [
+      ["250g", 750, 90],
+      ["500g", 1450, 80],
+      ["1kg", 2800, 50],
     ],
-    rating: 4.6,
-    reviews_count: 29,
-    variants: [["250g", 950]],
   },
   {
-    slug: "pure-rose-water-arqe-gulab",
-    name: "Pure Rose Water (Arqe Gulab)",
+    slug: "pure-shilajit-resin",
+    name: "Pure Himalayan Shilajit Resin",
     category: "wellness",
     short_desc:
-      "Distilled from native Kashmiri roses. Zero additives.",
+      "Purified Himalayan Shilajit resin, rich in fulvic acid and trace minerals.",
     description:
-      "Traditional hydro-distillation of native Kashmiri damask roses, bottled with nothing added. Use in cooking, skincare, or traditional preparations.",
-    image: "/images/rose-water.jpg",
+      "Raw Shilajit harvested from high-altitude rock faces in the Himalayas, purified using traditional Ayurvedic water-filtration methods. Tested for heavy metals with over 75% fulvic acid content.",
+    image: "/google-maps/safa-kesar-map-12.jpg",
     gallery: [
-      "/images/rose-water.jpg",
-      "/google-maps/safa-kesar-map-13.jpg",
-    ],
-    rating: 4.8,
-    reviews_count: 34,
-    variants: [["100 ml", 350]],
-  },
-  {
-    slug: "himalayan-shilajit-resin",
-    name: "Himalayan Shilajit Resin",
-    category: "wellness",
-    short_desc:
-      "Purified resin sourced from high-altitude rock exudates.",
-    description:
-      "Raw shilajit collected from high-altitude rock exudates in the Himalaya, then purified using traditional water filtration. Lab tested for heavy metals before packing.",
-    image: "/images/shilajit.jpg",
-    gallery: [
+      "/google-maps/safa-kesar-map-12.jpg",
       "/images/shilajit.jpg",
-      "/google-maps/safa-kesar-map-13.jpg",
     ],
-    rating: 4.7,
-    reviews_count: 22,
-    variants: [["10 g", 1800]],
+    badge: "75% Fulvic Acid",
+    rating: 4.9,
+    reviews_count: 94,
+    batch_no: "SH-99",
+    origin: "High Himalayan Ridge (18,000 ft)",
+    variants: [
+      ["20g", 1200, 100],
+      ["50g", 2700, 60],
+    ],
+  },
+  {
+    slug: "saffron-infused-acacia-honey",
+    name: "Saffron Acacia Honey",
+    category: "wellness",
+    short_desc:
+      "Raw mono-floral Acacia honey infused with genuine Mongra saffron strands.",
+    description:
+      "Wild acacia honey from Kashmir forest apiaries, steeped with our own hand-harvested Mongra saffron threads. Naturally non-crystallizing with a delicate floral warmth.",
+    image: "/google-maps/safa-kesar-map-11.jpg",
+    gallery: [
+      "/google-maps/safa-kesar-map-11.jpg",
+      "/images/cart-jar.jpg",
+    ],
+    badge: "Raw & Unfiltered",
+    rating: 4.8,
+    reviews_count: 51,
+    origin: "Kashmir Valley Apiaries",
+    variants: [
+      ["250g", 650, 80],
+      ["500g", 1200, 50],
+    ],
   },
 ];
 
 function seed(db: DatabaseSync) {
-  const productCount = db
-    .prepare("SELECT COUNT(*) AS n FROM products")
-    .get() as { n: number };
+  const count = Number(
+    (db.prepare("SELECT COUNT(*) as c FROM products").get() as { c: number }).c
+  );
+  if (count === 0) {
+    const insertProduct = db.prepare(`
+      INSERT INTO products (
+        slug, name, category, short_desc, description, image, images,
+        badge, rating, reviews_count, batch_no, harvest_date,
+        crocin, safranal, picrocrocin, origin, sort_order
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `);
 
-  if (productCount.n === 0) {
-    const insertProduct = db.prepare(`INSERT INTO products
-      (slug, name, category, short_desc, description, image, images, badge, rating, reviews_count,
-       batch_no, harvest_date, crocin, safranal, picrocrocin, origin, sort_order)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
-    const insertVariant = db.prepare(
-      "INSERT INTO product_variants (product_id, label, price, sort_order) VALUES (?, ?, ?, ?)"
-    );
+    const insertVariant = db.prepare(`
+      INSERT INTO product_variants (product_id, label, price, stock, sort_order)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+
     SEED_PRODUCTS.forEach((p, i) => {
       const r = insertProduct.run(
         p.slug,
@@ -306,14 +416,37 @@ function seed(db: DatabaseSync) {
         p.origin ?? "",
         i
       );
-      p.variants.forEach(([label, rupees], j) =>
-        insertVariant.run(Number(r.lastInsertRowid), label, rupees * 100, j)
+      p.variants.forEach(([label, rupees, stock], j) =>
+        insertVariant.run(Number(r.lastInsertRowid), label, rupees * 100, stock ?? 100, j)
       );
     });
   }
 
+  // Seed default coupons
+  db.prepare(`
+    INSERT OR IGNORE INTO coupons (code, discount_type, discount_value, min_order_amount, active)
+    VALUES ('HARVEST10', 'percent', 10, 150000, 1)
+  `).run();
+  db.prepare(`
+    INSERT OR IGNORE INTO coupons (code, discount_type, discount_value, min_order_amount, active)
+    VALUES ('WELCOME200', 'flat', 20000, 200000, 1)
+  `).run();
+
+  // Seed sample reviews
+  const reviewCount = Number(
+    (db.prepare("SELECT COUNT(*) as c FROM reviews").get() as { c: number }).c
+  );
+  if (reviewCount === 0) {
+    const insertReview = db.prepare(`
+      INSERT INTO reviews (author_name, rating, comment, source, verified, featured)
+      VALUES (?, ?, ?, ?, 1, ?)
+    `);
+    insertReview.run("Dr. Rajesh Sharma, Delhi", 5, "The saffron quality is unmatched. Cold water test confirmed genuine Mongra with incredible aroma and coloring strength.", "google_maps", 1);
+    insertReview.run("Priya Deshmukh, Mumbai", 5, "Visited their NH 44 showroom during our Kashmir trip. Aadil was extremely helpful. Walnuts and Shilajit are top notch!", "google_maps", 1);
+    insertReview.run("Vikram Malhotra, Bangalore", 5, "Fast shipping and packaging in sealed glass jars ensures fresh aromatics. Real batch verification numbers on jar.", "website", 1);
+  }
+
   const settingKeys = Object.keys(DEFAULT_SETTINGS);
-  const placeholders = settingKeys.map(() => "?").join(",");
   db.prepare(
     `INSERT OR IGNORE INTO settings (key, value) VALUES ${settingKeys
       .map(() => "(?, ?)")
@@ -328,26 +461,36 @@ function seed(db: DatabaseSync) {
   ).run(crypto.randomUUID().replaceAll("-", "") + crypto.randomUUID().replaceAll("-", ""));
 }
 
-// Adds columns introduced after the first release to existing databases.
 function migrate(db: DatabaseSync) {
-  const cols = db.prepare("PRAGMA table_info(products)").all() as {
-    name: string;
-  }[];
-  if (!cols.some((c) => c.name === "images")) {
+  // Check products table
+  const prodCols = db.prepare("PRAGMA table_info(products)").all() as { name: string }[];
+  if (!prodCols.some((c) => c.name === "images")) {
     db.exec("ALTER TABLE products ADD COLUMN images TEXT DEFAULT '[]'");
   }
-  if (!cols.some((c) => c.name === "cod_enabled")) {
+  if (!prodCols.some((c) => c.name === "cod_enabled")) {
     db.exec("ALTER TABLE products ADD COLUMN cod_enabled INTEGER DEFAULT 1");
   }
 
-  // Update existing products with enriched Google Maps imagery
-  SEED_PRODUCTS.forEach((p) => {
-    db.prepare("UPDATE products SET image = ?, images = ? WHERE slug = ?").run(
-      p.image,
-      JSON.stringify(p.gallery ?? []),
-      p.slug
-    );
-  });
+  // Check product_variants table
+  const varCols = db.prepare("PRAGMA table_info(product_variants)").all() as { name: string }[];
+  if (!varCols.some((c) => c.name === "stock")) {
+    db.exec("ALTER TABLE product_variants ADD COLUMN stock INTEGER DEFAULT 100");
+  }
+
+  // Check orders table
+  const orderCols = db.prepare("PRAGMA table_info(orders)").all() as { name: string }[];
+  if (!orderCols.some((c) => c.name === "coupon_code")) {
+    db.exec("ALTER TABLE orders ADD COLUMN coupon_code TEXT DEFAULT ''");
+  }
+  if (!orderCols.some((c) => c.name === "discount_amount")) {
+    db.exec("ALTER TABLE orders ADD COLUMN discount_amount INTEGER DEFAULT 0");
+  }
+  if (!orderCols.some((c) => c.name === "tracking_number")) {
+    db.exec("ALTER TABLE orders ADD COLUMN tracking_number TEXT DEFAULT ''");
+  }
+  if (!orderCols.some((c) => c.name === "tracking_carrier")) {
+    db.exec("ALTER TABLE orders ADD COLUMN tracking_carrier TEXT DEFAULT 'Delhivery'");
+  }
 }
 
 export function getDb(): DatabaseSync {

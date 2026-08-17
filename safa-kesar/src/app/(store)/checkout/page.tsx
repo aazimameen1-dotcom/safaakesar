@@ -13,12 +13,12 @@ export default function CheckoutPage() {
     products.map((p) => [p.id, p.cod_enabled === 1])
   );
   return (
-    <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12">
-      <h1 className="font-headline-xl text-headline-lg-mobile md:text-headline-xl text-walnut-ink mb-4">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+      <h1 className="font-headline-xl text-headline-lg-mobile md:text-headline-xl text-on-surface mb-2 font-bold">
         Checkout
       </h1>
-      <p className="font-body-md text-body-md text-on-surface-variant mb-12">
-        Secure, unhurried, and transparent — like everything we do.
+      <p className="font-body-md text-sm sm:text-base text-on-surface-variant mb-8 sm:mb-10">
+        Direct from Lethipora, Pampore. Sourced with radical transparency.
       </p>
       <CheckoutForm
         freeShippingThreshold={settings.free_shipping_threshold}

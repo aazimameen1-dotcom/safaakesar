@@ -16,7 +16,18 @@ import {
   setAdminCookie,
 } from "@/lib/auth";
 import { hashPassword } from "@/lib/password";
-import { updateOrderStatus } from "@/lib/queries";
+import {
+  updateOrderStatus,
+  updateOrderTracking,
+  saveCoupon,
+  deleteCoupon,
+  saveGalleryImage,
+  deleteGalleryImage,
+  saveReview,
+  deleteReview,
+  toggleReviewFeatured,
+  validateCoupon,
+} from "@/lib/queries";
 
 /* ── Auth ──────────────────────────────────────────────────────────── */
 
@@ -66,7 +77,7 @@ async function requireAdmin() {
 
 /* ── Products ──────────────────────────────────────────────────────── */
 
-type VariantInput = { label: string; price: number };
+type VariantInput = { label: string; price: number; stock?: number };
 
 export async function saveProductAction(formData: FormData) {
   await requireAdmin();
@@ -104,148 +115,259 @@ export async function saveProductAction(formData: FormData) {
     picrocrocin: String(formData.get("picrocrocin") ?? "").trim(),
     origin: String(formData.get("origin") ?? "").trim(),
     cod_enabled: formData.get("cod_enabled") === "on" ? 1 : 0,
-    sort_order: Math.floor(Number(formData.get("sort_order")) || 0),
+    sort_order: Number(formData.get("sort_order")) || 0,
     active: formData.get("active") === "on" ? 1 : 0,
   };
 
-  // Image: uploaded file wins, else keep existing / use URL field
-  let image = String(formData.get("image_url") ?? "").trim();
-  const file = formData.get("image_file");
-  if (file instanceof File && file.size > 0) {
-    image = await saveUpload(file);
+  // Image upload
+  const file = formData.get("image_file") as File | null;
+  let imagePath: string | null = null;
+  if (file && file.size > 0) {
+    imagePath = await handleImageUpload(file);
   }
 
-  // Gallery images: per-slot "gallery_file_<i>" upload or "gallery_json" URL entry
-  let galleryUrls: string[] = [];
-  try {
-    galleryUrls = JSON.parse(String(formData.get("gallery_json") ?? "[]"));
-  } catch {
-    galleryUrls = [];
-  }
-  const gallery: string[] = [];
-  for (let i = 0; i < galleryUrls.length; i++) {
-    const gFile = formData.get(`gallery_file_${i}`);
-    if (gFile instanceof File && gFile.size > 0) {
-      gallery.push(await saveUpload(gFile));
-    } else if (typeof galleryUrls[i] === "string" && galleryUrls[i].trim()) {
-      gallery.push(galleryUrls[i].trim());
-    }
-  }
-  const imagesJson = JSON.stringify(gallery);
-
-  let productId: number;
-  if (id) {
-    db.prepare(
-      `UPDATE products SET slug=?, name=?, category=?, short_desc=?, description=?, image=?, images=?,
-       badge=?, rating=?, reviews_count=?, batch_no=?, harvest_date=?, crocin=?, safranal=?,
-       picrocrocin=?, origin=?, cod_enabled=?, sort_order=?, active=? WHERE id=?`
-    ).run(
-      fields.slug, fields.name, fields.category, fields.short_desc, fields.description,
-      image, imagesJson, fields.badge, fields.rating, fields.reviews_count, fields.batch_no,
-      fields.harvest_date, fields.crocin, fields.safranal, fields.picrocrocin,
-      fields.origin, fields.cod_enabled, fields.sort_order, fields.active, id
-    );
-    productId = id;
-    db.prepare("DELETE FROM product_variants WHERE product_id = ?").run(id);
-  } else {
-    const result = db.prepare(
-      `INSERT INTO products (slug, name, category, short_desc, description, image, images, badge,
-       rating, reviews_count, batch_no, harvest_date, crocin, safranal, picrocrocin, origin,
-       cod_enabled, sort_order, active) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-    ).run(
-      fields.slug, fields.name, fields.category, fields.short_desc, fields.description,
-      image, imagesJson, fields.badge, fields.rating, fields.reviews_count, fields.batch_no,
-      fields.harvest_date, fields.crocin, fields.safranal, fields.picrocrocin,
-      fields.origin, fields.cod_enabled, fields.sort_order, fields.active
-    );
-    productId = Number(result.lastInsertRowid);
-  }
-
-  // Variants arrive as JSON (managed client-side)
+  // Parse variants
+  const variantsRaw = String(formData.get("variants_json") ?? "[]");
   let variants: VariantInput[] = [];
   try {
-    variants = JSON.parse(String(formData.get("variants") ?? "[]"));
+    variants = JSON.parse(variantsRaw);
   } catch {
     variants = [];
   }
-  const insertVariant = db.prepare(
-    "INSERT INTO product_variants (product_id, label, price, sort_order) VALUES (?, ?, ?, ?)"
-  );
-  variants
-    .filter((v) => v.label?.trim() && Number(v.price) > 0)
-    .forEach((v, i) =>
-      insertVariant.run(
-        productId,
-        v.label.trim(),
-        Math.round(Number(v.price) * 100),
-        i
-      )
-    );
 
-  revalidatePath("/admin/products");
+  if (variants.length === 0) {
+    throw new Error("At least one variant (e.g. 1g, 5g) with a price is required");
+  }
+
+  let productId = id;
+
+  if (id) {
+    // Update
+    if (imagePath) {
+      db.prepare(`
+        UPDATE products SET
+          slug = ?, name = ?, category = ?, short_desc = ?, description = ?,
+          image = ?, badge = ?, rating = ?, reviews_count = ?, batch_no = ?,
+          harvest_date = ?, crocin = ?, safranal = ?, picrocrocin = ?,
+          origin = ?, cod_enabled = ?, sort_order = ?, active = ?
+        WHERE id = ?
+      `).run(
+        fields.slug, fields.name, fields.category, fields.short_desc, fields.description,
+        imagePath, fields.badge, fields.rating, fields.reviews_count, fields.batch_no,
+        fields.harvest_date, fields.crocin, fields.safranal, fields.picrocrocin,
+        fields.origin, fields.cod_enabled, fields.sort_order, fields.active, id
+      );
+    } else {
+      db.prepare(`
+        UPDATE products SET
+          slug = ?, name = ?, category = ?, short_desc = ?, description = ?,
+          badge = ?, rating = ?, reviews_count = ?, batch_no = ?,
+          harvest_date = ?, crocin = ?, safranal = ?, picrocrocin = ?,
+          origin = ?, cod_enabled = ?, sort_order = ?, active = ?
+        WHERE id = ?
+      `).run(
+        fields.slug, fields.name, fields.category, fields.short_desc, fields.description,
+        fields.badge, fields.rating, fields.reviews_count, fields.batch_no,
+        fields.harvest_date, fields.crocin, fields.safranal, fields.picrocrocin,
+        fields.origin, fields.cod_enabled, fields.sort_order, fields.active, id
+      );
+    }
+    // Replace variants
+    db.prepare("DELETE FROM product_variants WHERE product_id = ?").run(id);
+  } else {
+    // Insert
+    const r = db.prepare(`
+      INSERT INTO products (
+        slug, name, category, short_desc, description, image, badge,
+        rating, reviews_count, batch_no, harvest_date, crocin, safranal,
+        picrocrocin, origin, cod_enabled, sort_order, active
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      fields.slug, fields.name, fields.category, fields.short_desc, fields.description,
+      imagePath ?? "", fields.badge, fields.rating, fields.reviews_count, fields.batch_no,
+      fields.harvest_date, fields.crocin, fields.safranal, fields.picrocrocin,
+      fields.origin, fields.cod_enabled, fields.sort_order, fields.active
+    );
+    productId = Number(r.lastInsertRowid);
+  }
+
+  const insertVariant = db.prepare(`
+    INSERT INTO product_variants (product_id, label, price, stock, sort_order)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+  variants.forEach((v, i) => {
+    insertVariant.run(
+      productId,
+      v.label,
+      Math.round(v.price), // stored in paise
+      v.stock ?? 100,
+      i
+    );
+  });
+
+  revalidatePath("/");
   revalidatePath("/shop");
   revalidatePath(`/product/${fields.slug}`);
-  revalidatePath("/");
-  redirect("/admin/products?saved=1");
+  revalidatePath("/admin/products");
+  redirect("/admin/products");
 }
 
 export async function deleteProductAction(formData: FormData) {
   await requireAdmin();
   const id = Number(formData.get("id"));
-  if (id) getDb().prepare("DELETE FROM products WHERE id = ?").run(id);
-  revalidatePath("/admin/products");
-  revalidatePath("/shop");
-  revalidatePath("/");
-  redirect("/admin/products?deleted=1");
+  if (id) {
+    getDb().prepare("DELETE FROM products WHERE id = ?").run(id);
+    revalidatePath("/");
+    revalidatePath("/shop");
+    revalidatePath("/admin/products");
+  }
+  redirect("/admin/products");
 }
 
-const ALLOWED_IMAGE_MIMES = new Set([
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-  "image/avif",
-  "image/gif",
-]);
-
-const ALLOWED_IMAGE_EXTS = new Set(["jpg", "jpeg", "png", "webp", "avif", "gif"]);
-const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB
-
-async function saveUpload(file: File): Promise<string> {
-  if (file.size > MAX_UPLOAD_BYTES) {
-    throw new Error("File size exceeds 10MB limit.");
-  }
-
-  if (file.type && !ALLOWED_IMAGE_MIMES.has(file.type.toLowerCase())) {
-    throw new Error("Invalid file type. Only JPG, PNG, WebP, AVIF, and GIF images are allowed.");
-  }
-
-  const rawExt = (file.name.split(".").pop() ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
-  const ext = ALLOWED_IMAGE_EXTS.has(rawExt) ? rawExt : "jpg";
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-
-  // Validate magic bytes for common image types
-  if (buffer.length < 4) {
-    throw new Error("Invalid file content.");
-  }
-
-  const name = `${Date.now()}-${randomBytes(8).toString("hex")}.${ext}`;
-  const dir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(dir, { recursive: true });
-  await writeFile(path.join(dir, name), buffer);
-  return `/uploads/${name}`;
-}
-
-/* ── Orders ────────────────────────────────────────────────────────── */
+/* ── Orders & Tracking ───────────────────────────────────────────────── */
 
 export async function updateOrderStatusAction(formData: FormData) {
   await requireAdmin();
   const id = Number(formData.get("id"));
-  const status = String(formData.get("status") ?? "");
-  if (id && status) updateOrderStatus(id, status);
-  revalidatePath("/admin/orders");
-  revalidatePath(`/admin/orders/${id}`);
+  const status = String(formData.get("status"));
+  if (id && status) {
+    updateOrderStatus(id, status);
+    revalidatePath("/admin/orders");
+    revalidatePath(`/admin/orders/${id}`);
+    revalidatePath("/admin");
+  }
+}
+
+export async function updateOrderTrackingAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  const trackingNumber = String(formData.get("tracking_number") ?? "");
+  const carrier = String(formData.get("tracking_carrier") ?? "Delhivery");
+  if (id) {
+    updateOrderTracking(id, trackingNumber, carrier);
+    revalidatePath("/admin/orders");
+    revalidatePath(`/admin/orders/${id}`);
+  }
+}
+
+/* ── Coupons ────────────────────────────────────────────────────────── */
+
+export async function saveCouponAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id")) || null;
+  const code = String(formData.get("code") ?? "").trim();
+  const discountType = String(formData.get("discount_type")) as "percent" | "flat";
+  const rawValue = Number(formData.get("discount_value")) || 0;
+  const discountValue = discountType === "percent" ? rawValue : Math.round(rawValue * 100);
+  const minOrderAmount = Math.round((Number(formData.get("min_order_rupees")) || 0) * 100);
+  const maxDiscount = Math.round((Number(formData.get("max_discount_rupees")) || 0) * 100);
+  const usageLimit = Number(formData.get("usage_limit")) || 0;
+  const active = formData.get("active") === "on" ? 1 : 0;
+
+  if (!code) throw new Error("Coupon code is required");
+
+  saveCoupon({
+    id,
+    code,
+    discount_type: discountType,
+    discount_value: discountValue,
+    min_order_amount: minOrderAmount,
+    max_discount: maxDiscount,
+    usage_limit: usageLimit,
+    active,
+  });
+
+  revalidatePath("/admin/coupons");
+  redirect("/admin/coupons");
+}
+
+export async function deleteCouponAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (id) {
+    deleteCoupon(id);
+    revalidatePath("/admin/coupons");
+  }
+}
+
+export async function checkCouponCodeAction(code: string, subtotalPaise: number) {
+  return validateCoupon(code, subtotalPaise);
+}
+
+/* ── Gallery Images ─────────────────────────────────────────────────── */
+
+export async function uploadGalleryPhotoAction(formData: FormData) {
+  await requireAdmin();
+  const title = String(formData.get("title") ?? "").trim() || "Showroom Photo";
+  const category = String(formData.get("category") ?? "showroom");
+  const file = formData.get("photo_file") as File | null;
+
+  if (!file || file.size === 0) {
+    throw new Error("Please select an image file to upload");
+  }
+
+  const url = await handleImageUpload(file);
+  saveGalleryImage(url, title, category);
+
+  revalidatePath("/");
+  revalidatePath("/visit");
+  revalidatePath("/admin/gallery");
+  redirect("/admin/gallery");
+}
+
+export async function deleteGalleryPhotoAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (id) {
+    deleteGalleryImage(id);
+    revalidatePath("/visit");
+    revalidatePath("/admin/gallery");
+  }
+}
+
+/* ── Reviews ────────────────────────────────────────────────────────── */
+
+export async function saveReviewAction(formData: FormData) {
+  await requireAdmin();
+  const author_name = String(formData.get("author_name") ?? "").trim();
+  const rating = Number(formData.get("rating")) || 5;
+  const comment = String(formData.get("comment") ?? "").trim();
+  const source = String(formData.get("source") ?? "google_maps");
+  const featured = formData.get("featured") === "on" ? 1 : 0;
+
+  if (!author_name || !comment) throw new Error("Author name and review text are required");
+
+  saveReview({
+    author_name,
+    rating,
+    comment,
+    source,
+    verified: 1,
+    featured,
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin/reviews");
+  redirect("/admin/reviews");
+}
+
+export async function toggleReviewFeaturedAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  const featured = Number(formData.get("featured")) ? 1 : 0;
+  if (id) {
+    toggleReviewFeatured(id, featured);
+    revalidatePath("/admin/reviews");
+  }
+}
+
+export async function deleteReviewAction(formData: FormData) {
+  await requireAdmin();
+  const id = Number(formData.get("id"));
+  if (id) {
+    deleteReview(id);
+    revalidatePath("/admin/reviews");
+  }
 }
 
 /* ── Settings ──────────────────────────────────────────────────────── */
@@ -255,18 +377,34 @@ export async function saveSettingsAction(formData: FormData) {
   const db = getDb();
   const entries: [string, string][] = [
     ["harvest_banner", String(formData.get("harvest_banner") ?? "").trim()],
-    ["whatsapp_number", String(formData.get("whatsapp_number") ?? "").replace(/\D/g, "")],
-    ["whatsapp_label", String(formData.get("whatsapp_label") ?? "").trim() || "WhatsApp"],
-    ["free_shipping_threshold", String(Math.round(Number(formData.get("free_shipping") || 0) * 100))],
-    ["flat_shipping", String(Math.round(Number(formData.get("flat_shipping") || 0) * 100))],
+    ["whatsapp_number", String(formData.get("whatsapp_number") ?? "").trim()],
+    ["whatsapp_label", String(formData.get("whatsapp_label") ?? "WhatsApp").trim()],
+    [
+      "free_shipping_threshold",
+      String(
+        Math.round((Number(formData.get("free_shipping_rupees")) || 2000) * 100)
+      ),
+    ],
+    [
+      "flat_shipping",
+      String(Math.round((Number(formData.get("flat_shipping_rupees")) || 90) * 100)),
+    ],
     ["store_address", String(formData.get("store_address") ?? "").trim()],
     ["store_phone", String(formData.get("store_phone") ?? "").trim()],
     ["store_email", String(formData.get("store_email") ?? "").trim()],
     ["cod_enabled", formData.get("cod_enabled") === "on" ? "1" : "0"],
   ];
-  const stmt = db.prepare("UPDATE settings SET value = ? WHERE key = ?");
-  for (const [key, value] of entries) stmt.run(value, key);
-  revalidatePath("/", "layout");
+
+  const update = db.prepare(
+    "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+  );
+  entries.forEach(([k, v]) => update.run(k, v));
+
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/checkout");
+  revalidatePath("/visit");
+  revalidatePath("/admin/settings");
   redirect("/admin/settings?saved=1");
 }
 
@@ -275,12 +413,63 @@ export async function changePasswordAction(
   formData: FormData
 ): Promise<{ error?: string; success?: string }> {
   await requireAdmin();
-  const current = String(formData.get("current_password") ?? "");
-  const next = String(formData.get("new_password") ?? "");
-  if (next.length < 6) return { error: "New password must be at least 6 characters." };
-  if (!checkAdminCredentials(current)) return { error: "Current password is incorrect." };
+  const currentPassword = String(formData.get("current_password") ?? "");
+  const newPassword = String(formData.get("new_password") ?? "");
+
+  if (!checkAdminCredentials(currentPassword)) {
+    return { error: "Current password is incorrect." };
+  }
+  if (!newPassword || newPassword.length < 8) {
+    return { error: "New password must be at least 8 characters." };
+  }
+
+  const hash = hashPassword(newPassword);
   getDb()
-    .prepare("UPDATE settings SET value = ? WHERE key = 'admin_password_hash'")
-    .run(hashPassword(next));
-  return { success: "Password updated." };
+    .prepare(
+      "INSERT INTO settings (key, value) VALUES ('admin_password_hash', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value"
+    )
+    .run(hash);
+
+  return { success: "Password successfully changed!" };
+}
+
+/* ── Image Upload Helper ───────────────────────────────────────────── */
+
+const ALLOWED_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+  "image/gif",
+]);
+
+const MIME_EXTENSIONS: Record<string, string> = {
+  "image/jpeg": ".jpg",
+  "image/png": ".png",
+  "image/webp": ".webp",
+  "image/avif": ".avif",
+  "image/gif": ".gif",
+};
+
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024; // 10MB
+
+async function handleImageUpload(file: File): Promise<string> {
+  if (!ALLOWED_MIME_TYPES.has(file.type)) {
+    throw new Error(
+      "Invalid image type. Allowed types: JPEG, PNG, WebP, AVIF, GIF."
+    );
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("Image exceeds maximum allowed size of 10MB.");
+  }
+
+  const ext = MIME_EXTENSIONS[file.type] || ".jpg";
+  const filename = `${randomBytes(16).toString("hex")}${ext}`;
+  const uploadDir = path.join(process.cwd(), "public", "uploads");
+
+  await mkdir(uploadDir, { recursive: true });
+  const buffer = Buffer.from(await file.arrayBuffer());
+  await writeFile(path.join(uploadDir, filename), buffer);
+
+  return `/uploads/${filename}`;
 }

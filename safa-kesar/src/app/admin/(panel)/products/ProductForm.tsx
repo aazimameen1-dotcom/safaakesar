@@ -61,7 +61,7 @@ export type ProductFormValues = {
   cod_enabled: number;
   sort_order: number;
   active: number;
-  variants: { label: string; price: number }[];
+  variants: { label: string; price: number; stock?: number }[];
 };
 
 const fileInputClass =
@@ -104,7 +104,10 @@ export default function ProductForm({ initial }: { initial: ProductFormValues })
     initial.gallery.length ? initial.gallery : [""]
   );
 
-  const setVariant = (i: number, patch: Partial<{ label: string; price: number }>) =>
+  const setVariant = (
+    i: number,
+    patch: Partial<{ label: string; price: number; stock?: number }>
+  ) =>
     setVariants((vs) => vs.map((v, j) => (j === i ? { ...v, ...patch } : v)));
 
   const setGalleryUrl = (i: number, url: string) =>
@@ -302,15 +305,15 @@ export default function ProductForm({ initial }: { initial: ProductFormValues })
         </div>
         <div className="space-y-3">
           {variants.map((v, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={i} className="flex flex-wrap sm:flex-nowrap items-center gap-3">
               <input
                 value={v.label}
                 onChange={(e) => setVariant(i, { label: e.target.value })}
                 placeholder="Weight, e.g. 1g / 250g"
-                className={`${inputClass} max-w-[220px]`}
+                className={`${inputClass} max-w-[180px]`}
               />
-              <div className="flex items-center gap-2 flex-1">
-                <span className="font-body-md text-body-md text-on-surface-variant">₹</span>
+              <div className="flex items-center gap-2">
+                <span className="font-body-md text-sm text-on-surface-variant font-bold">₹</span>
                 <input
                   value={v.price || ""}
                   onChange={(e) => setVariant(i, { price: Number(e.target.value) })}
@@ -318,7 +321,18 @@ export default function ProductForm({ initial }: { initial: ProductFormValues })
                   min="0"
                   step="0.01"
                   placeholder="Price"
-                  className={`${inputClass} max-w-[160px] tabular`}
+                  className={`${inputClass} max-w-[130px] tabular`}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-body-md text-xs text-on-surface-variant whitespace-nowrap">Stock:</span>
+                <input
+                  value={v.stock ?? 100}
+                  onChange={(e) => setVariant(i, { stock: Number(e.target.value) })}
+                  type="number"
+                  min="0"
+                  placeholder="100"
+                  className={`${inputClass} max-w-[110px] tabular`}
                 />
               </div>
               <button
@@ -333,7 +347,7 @@ export default function ProductForm({ initial }: { initial: ProductFormValues })
           ))}
         </div>
         <p className="font-body-md text-xs text-on-surface-variant mt-3">
-          At least one variant is required for the product to be purchasable.
+          Specify weight label, INR price, and available inventory stock per variant.
         </p>
       </section>
 
