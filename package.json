@@ -1,0 +1,13 @@
+{
+  "name": "safa-kesar-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix safa-kesar run dev",
+    "build": "npm --prefix safa-kesar run build",
+    "start": "npm --prefix safa-kesar run start"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

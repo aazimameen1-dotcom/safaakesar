@@ -3,7 +3,7 @@ import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { hashPassword } from "./password";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
 
 declare global {
   // eslint-disable-next-line no-var
